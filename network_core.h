@@ -49,6 +49,7 @@ public slots:
     void client_Error(QAbstractSocket::SocketError);
     void client_sendToServer();
     void client_Connected();
+    bool client_is_Connected();
 
 
 
