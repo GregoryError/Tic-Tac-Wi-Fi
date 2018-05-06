@@ -109,6 +109,8 @@ void network_core::client_FindAndConnect()
 
     QString possiblyServerAddress;
 
+    QTime time;
+
 
     while(beg != 255)
     {
@@ -116,15 +118,13 @@ void network_core::client_FindAndConnect()
         possiblyServerAddress = temp + "." + QString::number(beg);
         ++beg;
         qDebug() << possiblyServerAddress;
-        ClientSocket->connectToHost(possiblyServerAddress, Port);
-        ClientSocket->waitForConnected(90);
 
-        QTime time;
+
         time.start();
 
         for(int i(0); i < 11;)
         {
-            if(time.elapsed() > 9){
+            if(time.elapsed() > 10){
                 time.start();
                 ++i;
             }
@@ -133,11 +133,14 @@ void network_core::client_FindAndConnect()
         if(isConnected)
             break;
 
+
+        ClientSocket->connectToHost(possiblyServerAddress, Port);
+        ClientSocket->waitForConnected(50);
+
+
+
         //ClientSocket->abort();    // Not sure about this
     }
-
-
-
 
 
 

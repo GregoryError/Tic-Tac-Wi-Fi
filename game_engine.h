@@ -19,6 +19,8 @@ signals:
 
 public slots:
     void setPlayerName(QString name);
+    void nextMove(int field);
+    int whoIsWin();
 };
 
 #endif // GAME_ENGINE_H

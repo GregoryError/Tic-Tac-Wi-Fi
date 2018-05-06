@@ -67,8 +67,9 @@ Window {
             id: butt
             anchors.top: head.bottom
             anchors.margins: 50
-            width: 150
-            height: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 200
+            height: 100
             text: "Start Server"
             onPressed: {
                 network_core.slotListen()
@@ -81,8 +82,9 @@ Window {
             id: butt2
             anchors.top: butt.bottom
             anchors.margins: 50
-            width: 150
-            height: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 200
+            height: 100
             text: "Find Server"
             onPressed: {
 
@@ -96,8 +98,9 @@ Window {
             id: butt3
             anchors.top: butt2.bottom
             anchors.margins: 50
-            width: 150
-            height: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 200
+            height: 100
             text: "Disconnect client"
             onPressed: {
 
@@ -110,8 +113,9 @@ Window {
             id: butt4
             anchors.top: butt3.bottom
             anchors.margins: 50
-            width: 150
-            height: 50
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: 200
+            height: 100
             text: "Send Hello"
             onPressed: {
 
@@ -195,15 +199,15 @@ Window {
                                 model: 6
 
                                 Rectangle {
-                                    x: item.width / 2 - width / 11
-                                    y: item.height / 2 - height / 11
-                                    implicitWidth: 40
-                                    implicitHeight: 40
+                                    x: item.width / 2 - width / 7
+                                    y: item.height / 2 - height / 7
+                                    implicitWidth: 30
+                                    implicitHeight: 30
                                     radius: 50
                                     color: "#4B94FF"
                                     transform: [
                                         Translate {
-                                            y: -Math.min(item.width, item.height) * 0.4
+                                            y: -Math.min(item.width, item.height) * 0.7
                                         },
                                         Rotation {
                                             angle: index / repeater.count * 360
