@@ -23,7 +23,8 @@ void network_core::slotNewConnection()
 {
     socket = server->nextPendingConnection();
 
-    connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
+    connect(socket, SIGNAL(disconnected()), this, SLOT(server_stop()));
+
     connect(socket, SIGNAL(readyRead()), this, SLOT(slotReadClient()));
 
     sendToClient(socket, "Connected!");
@@ -83,7 +84,8 @@ bool network_core::client_is_Connected()
 void network_core::server_stop()
 {
 
-    server->deleteLater();
+    socket->deleteLater();
+    server->close();
 
 }
 

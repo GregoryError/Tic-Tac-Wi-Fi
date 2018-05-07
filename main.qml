@@ -52,6 +52,24 @@ Window {
             height: main.height
             anchors.top: head.bottom
 
+            Text {
+                id: statusTxt
+                anchors.horizontalCenter: mainfield.horizontalCenter
+                y: head.y + 15
+                font.pointSize: createButton.width / 15
+                font.family: "Sawasdee"
+                color: "#2b92f1"
+                OpacityAnimator{
+                    id: statusTxtAnim
+                    target: statusTxt
+                    from: 0
+                    to: 1
+                    duration: 700
+                    running: false
+                    loops: Animation.Infinite
+                }
+            }
+
 
 
 
@@ -65,15 +83,21 @@ Window {
          //
          //   }
 
+            Item {
+                id: startItem
+                width: mainfield.width
+                height: mainfield.height
+                anchors.horizontalCenter: mainfield.horizontalCenter
+                anchors.top: statusTxt.bottom
 
             TextField{
                 id: nameInput
                 maximumLength: 20
                 width: main.width / 2
                 height: main.height / 13
-                anchors.horizontalCenter: mainfield.horizontalCenter
-
-                y: head.y + 50
+                anchors.horizontalCenter: startItem.horizontalCenter
+                anchors.top: startItem.top
+                anchors.topMargin: 70
 
                 font.pixelSize: 30
                 font.family: "Lato Light"
@@ -94,10 +118,7 @@ Window {
                 // here must be reading from QSettings
 
 
-
-
             }
-
 
             Button{
                 id: findButton
@@ -114,13 +135,16 @@ Window {
                 Text{
                 anchors.centerIn: parent
                 color: "white"
-                font.pointSize: findButton.width / 15
+                font.pointSize: findButton.width / 11
                 font.family: "Sawasdee"
                 text: "Find game";
                 }
                 onClicked: {
                     game_engine.setPlayerName(nameInput.text)
                     bigbusy.running = true
+                    startItemDisAppear.running = true
+                    statusTxt.text = "Searching for server..."
+                    statusTxtAnim.running = true
                     firsttimer.running = true
                 }
             }
@@ -140,18 +164,34 @@ Window {
                 Text{
                 anchors.centerIn: parent
                 color: "white"
-                font.pointSize: createButton.width / 15
+                font.pointSize: createButton.width / 11
                 font.family: "Sawasdee"
                 text: "Start server";
                 }
                 onClicked: {
                     game_engine.setPlayerName(nameInput.text)
+
+                    statusTxt.text = "Waiting for player..."
+                    statusTxtAnim.running = true
+
                     network_core.slotListen()
+                    startItemDisAppear.running = true
+                    bigbusy.running = true
                 }
             }
 
+           OpacityAnimator{
+               id: startItemDisAppear
+               target: startItem
+               from: 1
+               to: 0
+               running: false
+               duration: 1000
+
+           }
 
 
+}
 
 
 
