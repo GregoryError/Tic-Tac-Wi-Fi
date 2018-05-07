@@ -3,6 +3,7 @@
 #include <QQmlContext>
 
 #include "network_core.h"
+#include "game_engine.h"
 
 int main(int argc, char *argv[])
 {
@@ -22,7 +23,10 @@ int main(int argc, char *argv[])
 
     network_core *net = new network_core(4242);
 
+    game_engine *game = new game_engine;
+
     cont->setContextProperty("network_core", net);
+    cont->setContextProperty("game_engine", game);
 
     return app.exec();
 

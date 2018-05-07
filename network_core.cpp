@@ -29,6 +29,8 @@ void network_core::slotNewConnection()
     sendToClient(socket, "Connected!");
 
 
+
+
 }
 
 void network_core::slotReadClient()

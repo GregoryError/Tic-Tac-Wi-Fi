@@ -20,32 +20,11 @@ Window {
 
     title: qsTr("Tic-Tac-Wi-fi")
 
-
-
-    Rectangle{
-        id: mainfield
-        width: main.width
-        height: main.height
-        anchors.fill: parent
-
-
-
-     //   Rectangle{
-     //       anchors.fill: parent
-     //       Image {
-     //           anchors.fill: parent
-     //           id: backGround
-     //           source: "qrc:/background.png"
-     //       }
-     //
-     //   }
-
-
-
         Rectangle{
             id: head
-            width: mainfield.width
-            height: mainfield.height / 15
+            width: main.width
+            height: main.height / 15
+            anchors.top: main.top
             color: "#2cbaf1"
             Text {
                 id: headText
@@ -63,65 +42,135 @@ Window {
 
 
 
-        Button{
-            id: butt
+
+
+
+
+        Rectangle{
+            id: mainfield
+            width: main.width
+            height: main.height
             anchors.top: head.bottom
-            anchors.margins: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: 200
-            height: 100
-            text: "Start Server"
-            onPressed: {
-                network_core.slotListen()
+
+
+
+
+         //   Rectangle{
+         //       anchors.fill: parent
+         //       Image {
+         //           anchors.fill: parent
+         //           id: backGround
+         //           source: "qrc:/background.png"
+         //       }
+         //
+         //   }
+
+
+            TextField{
+                id: nameInput
+                maximumLength: 20
+                width: main.width / 2
+                height: main.height / 13
+                anchors.horizontalCenter: mainfield.horizontalCenter
+
+                y: head.y + 50
+
+                font.pixelSize: 30
+                font.family: "Lato Light"
+                placeholderText: "Your name"
+                background: Rectangle {
+                radius: 7
+                implicitWidth: nameInput.width
+                implicitHeight: nameInput.height
+                border.color: "#2cbaf1"
+                border.width: 2
+            }
+
+                //onAccepted: passwordInput.forceActiveFocus()
+                color: "#2cbaf1"
+                font.pointSize: nameInput.width / 25
+                //KeyNavigation.tab: passwordInput
+
+                // here must be reading from QSettings
+
+
 
 
             }
-        }
 
-        Button{
-            id: butt2
-            anchors.top: butt.bottom
-            anchors.margins: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: 200
-            height: 100
-            text: "Find Server"
-            onPressed: {
 
-                bigbusy.running = true
-                firsttimer.running = true
-
+            Button{
+                id: findButton
+                width: nameInput.width
+                height: nameInput.height
+                anchors.top: nameInput.bottom
+                anchors.topMargin: 20
+                anchors.horizontalCenter: nameInput.horizontalCenter
+                background: Rectangle{
+                    anchors.fill: parent
+                    color: "#2cbaf1"
+                    radius: 7
+                }
+                Text{
+                anchors.centerIn: parent
+                color: "white"
+                font.pointSize: findButton.width / 15
+                font.family: "Sawasdee"
+                text: "Find game";
+                }
+                onClicked: {
+                    game_engine.setPlayerName(nameInput.text)
+                    bigbusy.running = true
+                    firsttimer.running = true
+                }
             }
-        }
 
-        Button{
-            id: butt3
-            anchors.top: butt2.bottom
-            anchors.margins: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: 200
-            height: 100
-            text: "Disconnect client"
-            onPressed: {
-
-                network_core.server_stop()
-
+            Button{
+                id: createButton
+                width: nameInput.width
+                height: nameInput.height
+                anchors.top: findButton.bottom
+                anchors.topMargin: 20
+                anchors.horizontalCenter: nameInput.horizontalCenter
+                background: Rectangle{
+                    anchors.fill: parent
+                    color: "#2cbaf1"
+                    radius: 7
+                }
+                Text{
+                anchors.centerIn: parent
+                color: "white"
+                font.pointSize: createButton.width / 15
+                font.family: "Sawasdee"
+                text: "Start server";
+                }
+                onClicked: {
+                    game_engine.setPlayerName(nameInput.text)
+                    network_core.slotListen()
+                }
             }
-        }
 
-        Button{
-            id: butt4
-            anchors.top: butt3.bottom
-            anchors.margins: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: 200
-            height: 100
-            text: "Send Hello"
-            onPressed: {
 
-                network_core.client_sendToServer()
 
-            }
+
+
+
+
+            // grid
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
 
 
@@ -156,7 +205,8 @@ Window {
               opacity: 0
               width: parent.width / 3
               height: parent.width / 3
-              anchors.centerIn: parent
+              y: head.y + 150
+              anchors.horizontalCenter: mainfield.horizontalCenter
               running: false
 
               OpacityAnimator {
@@ -204,7 +254,7 @@ Window {
                                     implicitWidth: 30
                                     implicitHeight: 30
                                     radius: 50
-                                    color: "#4B94FF"
+                                    color: "#2b92f1"
                                     transform: [
                                         Translate {
                                             y: -Math.min(item.width, item.height) * 0.7
@@ -225,7 +275,7 @@ Window {
 
     }
 
-}
+
 
 
 
