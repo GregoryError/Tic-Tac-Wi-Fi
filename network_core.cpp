@@ -4,6 +4,7 @@
 
 network_core::network_core(const int &nPort, QObject *parent)
 {
+
     server = new QTcpServer(this);
     Port = nPort;
     connect(server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
@@ -29,7 +30,7 @@ void network_core::slotNewConnection()
 
     sendToClient(socket, "Connected!");
 
-
+    isConnectedOnServer = true;
 
 
 }
@@ -43,6 +44,7 @@ void network_core::slotReadClient()
 
 void network_core::slotListen()
 {
+
     if(!server->listen(QHostAddress::Any, Port))
     {
         qDebug() << "Cant start the server: " << server->errorString();
@@ -87,6 +89,11 @@ void network_core::server_stop()
     socket->deleteLater();
     server->close();
 
+}
+
+bool network_core::isServerConnect()
+{
+    return isConnectedOnServer;
 }
 
 void network_core::client_FindAndConnect()

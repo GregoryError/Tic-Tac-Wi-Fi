@@ -29,6 +29,7 @@ private:      // client
     QTcpSocket *ClientSocket;
     QList<QHostAddress> myIpAddresses;
     bool isConnected = false;
+    bool isConnectedOnServer = false;
 
 
 
@@ -42,6 +43,7 @@ public slots:
     void slotReadClient();
     void slotListen();
     void server_stop();
+    bool isServerConnect();
 
 
 

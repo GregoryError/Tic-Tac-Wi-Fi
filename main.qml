@@ -193,10 +193,64 @@ Window {
 
 }
 
+             Grid{
+                 id: cells
+                 anchors.rightMargin: 25
+                 anchors.leftMargin: 25
+                 width: (mainfield.height / 9)
+                 height: (mainfield.height / 9)
+
+                 x: mainfield.height / 9
+                 y: createButton.y + 200
+
+                 visible: true
+                 columns: 3
+                 rows: 3
+                 spacing: 3
+
+                 Repeater{
+                     id: rpt
+                     model: 9
+
+
+                     Button{
+                        id: buttons
+
+                        width: cells.width
+                        height: cells.height
+
+
+                        background: Rectangle{
+                            anchors.fill: parent
+                            radius: 3
+                            color: "#2cbaf1"
+
+                        }
+
+                        Text{
+                            id: buttontxt
+                            anchors.centerIn: parent
+                            font.family: "Lato Light"
+                            font.pointSize: (main.height / 9) / 2 -10
+                            color: "white"
+
+
+                        }
+                            onClicked: {
+
+
+                                buttons.enabled = false
+                                //buttontxt.visible = false
+                                //buttons.visible = false
 
 
 
-            // grid
+                            }
+
+                       }
+
+                  }
+             }
 
 
 
@@ -225,16 +279,7 @@ Window {
 
                 onTriggered:{
                     network_core.client_FindAndConnect()
-                   // while(true)
-                   // {
-                    //    if(network_core.client_is_Connected())
-                    //    {
-                            bigbusy.running = false
-                            //break
-                       // }
-                  //  }
-
-
+                    bigbusy.running = false
 
                 }
             }
