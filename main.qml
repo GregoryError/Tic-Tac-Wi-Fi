@@ -43,20 +43,17 @@ Window {
 
 
 
-
-
-
         Rectangle{
             id: mainfield
             width: main.width
             height: main.height
             anchors.top: head.bottom
-
+            anchors.fill: main
             Text {
                 id: statusTxt
                 anchors.horizontalCenter: mainfield.horizontalCenter
                 y: head.y + 15
-                font.pointSize: createButton.width / 15
+                font.pointSize: createButton.width / 11
                 font.family: "Sawasdee"
                 color: "#2b92f1"
                 OpacityAnimator{
@@ -177,6 +174,9 @@ Window {
                     network_core.slotListen()
                     startItemDisAppear.running = true
                     bigbusy.running = true
+
+
+                    cells.visible = true    // this is temporary
                 }
             }
 
@@ -193,32 +193,31 @@ Window {
 
 }
 
+
+
+
              Grid{
                  id: cells
-                 anchors.rightMargin: 25
-                 anchors.leftMargin: 25
-                 width: (mainfield.height / 9)
-                 height: (mainfield.height / 9)
+                 anchors.horizontalCenter: parent.horizontalCenter
+                 y: mainfield.height / 2
 
-                 x: mainfield.height / 9
-                 y: createButton.y + 200
+                // anchors.fill: parent
 
-                 visible: true
+                 visible: false
+
                  columns: 3
                  rows: 3
-                 spacing: 3
+                 spacing: 7
+
 
                  Repeater{
                      id: rpt
                      model: 9
 
-
                      Button{
                         id: buttons
-
-                        width: cells.width
-                        height: cells.height
-
+                        width: 60
+                        height: 60
 
                         background: Rectangle{
                             anchors.fill: parent
@@ -231,8 +230,9 @@ Window {
                             id: buttontxt
                             anchors.centerIn: parent
                             font.family: "Lato Light"
-                            font.pointSize: (main.height / 9) / 2 -10
+                            font.pointSize: (main.height / 9) / 2 -15
                             color: "white"
+                            //text: index
 
 
                         }
@@ -250,9 +250,28 @@ Window {
                        }
 
                   }
+
+
+
+
+
+
+
+             ScaleAnimator{
+                 id: cellAppear
+                 target: cells
+                 running: cells.visible
+                 from: 100
+                 to: 1
+                 duration: 1300
+                 easing.type: Easing.OutExpo
+                 onStopped: {
+                    // some soundeffects
+                 }
              }
 
 
+            }
 
 
 
@@ -265,9 +284,7 @@ Window {
 
 
 
-        }
-
-
+}
 
 
 
@@ -280,6 +297,8 @@ Window {
                 onTriggered:{
                     network_core.client_FindAndConnect()
                     bigbusy.running = false
+                    cells.visible = true
+                    statusTxt.visible = false
 
                 }
             }
