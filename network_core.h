@@ -31,6 +31,8 @@ private:      // client
     bool isConnected = false;
     bool isConnectedOnServer = false;
 
+    QString test_ip;
+
 
 
 
@@ -47,6 +49,7 @@ public slots:
 
 
 
+    QString test_showIp();
     void client_FindAndConnect();
     void client_readyRead();
     void client_Error(QAbstractSocket::SocketError);

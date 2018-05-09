@@ -125,6 +125,7 @@ Window {
                 anchors.topMargin: 20
                 anchors.horizontalCenter: nameInput.horizontalCenter
                 background: Rectangle{
+                    id: findButtonBack
                     anchors.fill: parent
                     color: "#2cbaf1"
                     radius: 7
@@ -136,14 +137,24 @@ Window {
                 font.family: "Sawasdee"
                 text: "Find game";
                 }
+
+
                 onClicked: {
                     game_engine.setPlayerName(nameInput.text)
                     bigbusy.running = true
-                    startItemDisAppear.running = true
+                    createButtonDis.running = true
+
                     statusTxt.text = "Searching for server..."
                     statusTxtAnim.running = true
                     firsttimer.running = true
+
+
+
+
                 }
+
+
+
             }
 
             Button{
@@ -154,6 +165,7 @@ Window {
                 anchors.topMargin: 20
                 anchors.horizontalCenter: nameInput.horizontalCenter
                 background: Rectangle{
+                    id: createButtonBack
                     anchors.fill: parent
                     color: "#2cbaf1"
                     radius: 7
@@ -169,15 +181,41 @@ Window {
                     game_engine.setPlayerName(nameInput.text)
 
                     statusTxt.text = "Waiting for player..."
+
                     statusTxtAnim.running = true
 
+                    createButtonDis.running = true
+
                     network_core.slotListen()
-                    startItemDisAppear.running = true
+
+
                     bigbusy.running = true
 
 
-                    cells.visible = true    // this is temporary
+
+
+                   // cells.visible = true    // this is temporary
                 }
+
+
+                ScaleAnimator{
+                    id: createButtonDis
+                    target: createButton
+                    running: false
+                    from: 1
+                    to: 550
+                    duration: 1700
+                    easing.type: Easing.OutExpo
+                    onStopped: {
+                       // some soundeffects
+                       // startItem.visible = false
+                        startItemDisAppear.running = true
+                    }
+                }
+
+
+
+
             }
 
            OpacityAnimator{
@@ -186,14 +224,15 @@ Window {
                from: 1
                to: 0
                running: false
-               duration: 1000
+               duration: 200
+               onStopped: {
+                   startItem.visible = false
+               }
 
            }
 
 
 }
-
-
 
 
              Grid{
@@ -239,7 +278,7 @@ Window {
                             onClicked: {
 
 
-                                buttons.enabled = false
+                                //buttons.enabled = false
                                 //buttontxt.visible = false
                                 //buttons.visible = false
 
@@ -251,19 +290,13 @@ Window {
 
                   }
 
-
-
-
-
-
-
              ScaleAnimator{
                  id: cellAppear
                  target: cells
                  running: cells.visible
-                 from: 100
+                 from: 200
                  to: 1
-                 duration: 1300
+                 duration: 1000
                  easing.type: Easing.OutExpo
                  onStopped: {
                     // some soundeffects
@@ -274,10 +307,18 @@ Window {
             }
 
 
+             TextArea{
+                 id: testZone
+                 width: Screen.width - 100
+                 height: 250
 
+                 anchors.horizontalCenter: mainfield.horizontalCenter
+                 anchors.top: cells.bottom
+                 font.family: "Sawasdee"
+                 font.pixelSize: 20
+                 text: network_core.test_showIp()
 
-
-
+             }
 
 
 
@@ -290,15 +331,16 @@ Window {
 
         Timer {
             id: firsttimer
-                interval: 200;
+                interval: 1750;
 
                 //running:
 
                 onTriggered:{
                     network_core.client_FindAndConnect()
-                    bigbusy.running = false
+                    bigbusy.running = false               
+                    statusTxt.visible = false       
                     cells.visible = true
-                    statusTxt.visible = false
+
 
                 }
             }

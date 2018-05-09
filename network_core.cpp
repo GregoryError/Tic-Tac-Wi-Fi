@@ -96,6 +96,11 @@ bool network_core::isServerConnect()
     return isConnectedOnServer;
 }
 
+QString network_core::test_showIp()
+{
+    return test_ip;
+}
+
 void network_core::client_FindAndConnect()
 {
 
@@ -125,17 +130,17 @@ void network_core::client_FindAndConnect()
 
     while(beg != 255)
     {
-
-        possiblyServerAddress = temp + "." + QString::number(beg);
         ++beg;
+        possiblyServerAddress = temp + "." + QString::number(beg);
+
         qDebug() << possiblyServerAddress;
 
 
         time.start();
 
-        for(int i(0); i < 11;)
+        for(int i(0); i < 15;)
         {
-            if(time.elapsed() > 10){
+            if(time.elapsed() > 15){
                 time.start();
                 ++i;
             }
@@ -145,8 +150,9 @@ void network_core::client_FindAndConnect()
             break;
 
 
+        test_ip = possiblyServerAddress;
         ClientSocket->connectToHost(possiblyServerAddress, Port);
-        ClientSocket->waitForConnected(50);
+        ClientSocket->waitForConnected(70);
 
 
 
