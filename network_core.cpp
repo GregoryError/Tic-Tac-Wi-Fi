@@ -2,7 +2,7 @@
 
 
 
-network_core::network_core(const int &nPort, QObject *parent)
+network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
 {
 
     server = new QTcpServer(this);
@@ -17,6 +17,10 @@ network_core::network_core(const int &nPort, QObject *parent)
     connect(ClientSocket, SIGNAL(readyRead()), SLOT(client_readyRead()));
     connect(ClientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(client_Error(QAbstractSocket::SocketError)));
 
+    connect(server, SIGNAL(destroyed(QObject*)), SLOT(server_stop()));
+
+    PlayerNm = obj->PlayerName;
+
 }
 
 
@@ -28,12 +32,30 @@ void network_core::slotNewConnection()
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(slotReadClient()));
 
-    sendToClient(socket, "Connected!");
+    //sendToClient(socket, "Connected!");
+
+    sendToClient(socket, PlayerNm);
 
     isConnectedOnServer = true;
 
+    emit serverConnectedState();
+
+    qDebug() <<  "Someone just was connected.";
+
 
 }
+
+
+void network_core::server_stop()
+{
+      socket->deleteLater();
+      server->disconnect();
+   // server->deleteLater();
+      server->close();
+    qDebug() << "on disconnected";
+
+}
+
 
 void network_core::slotReadClient()
 {
@@ -83,13 +105,7 @@ bool network_core::client_is_Connected()
     return isConnected;
 }
 
-void network_core::server_stop()
-{
 
-    socket->deleteLater();
-    server->close();
-
-}
 
 bool network_core::isServerConnect()
 {
@@ -133,6 +149,8 @@ void network_core::client_FindAndConnect()
         ++beg;
         possiblyServerAddress = temp + "." + QString::number(beg);
 
+
+
         qDebug() << possiblyServerAddress;
 
 
@@ -150,16 +168,23 @@ void network_core::client_FindAndConnect()
             break;
 
 
+        //ClientSocket->abort();
+
+
         test_ip = possiblyServerAddress;
+
+
         ClientSocket->connectToHost(possiblyServerAddress, Port);
-        ClientSocket->waitForConnected(70);
+
+        if(ClientSocket->waitForConnected(70))
+           break;
+
+
 
 
 
         //ClientSocket->abort();    // Not sure about this
     }
-
-
 
 
 

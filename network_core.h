@@ -13,11 +13,14 @@
 #include <QtNetwork/QHostAddress>
 #include <QtNetwork/QNetworkInterface>
 
+#include "game_engine.h"
+
 class network_core : public QObject
 {
     Q_OBJECT
 public:
-    explicit network_core(const int &nPort, QObject *parent = nullptr);
+    explicit network_core(game_engine *obj, const int &nPort, QObject *parent = nullptr);
+    QString PlayerNm;
 
 private:
     QTcpServer *server;
@@ -39,6 +42,8 @@ private:      // client
 
 
 signals:
+    void serverConnectedState();
+
 
 public slots:
     virtual void slotNewConnection();

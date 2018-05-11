@@ -2,8 +2,9 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 
-#include "network_core.h"
-#include "game_engine.h"
+//#include "network_core.h"
+//#include "game_engine.h"
+#include "manager.h"
 
 int main(int argc, char *argv[])
 {
@@ -21,12 +22,9 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return -1;
 
-    network_core *net = new network_core(4242);
+    manager *top = new manager(cont);
 
-    game_engine *game = new game_engine;
-
-    cont->setContextProperty("network_core", net);
-    cont->setContextProperty("game_engine", game);
+    Q_UNUSED(top);
 
     return app.exec();
 

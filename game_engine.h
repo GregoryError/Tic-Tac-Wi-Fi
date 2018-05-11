@@ -9,15 +9,18 @@ class game_engine : public QObject
     Q_OBJECT
 public:
     explicit game_engine(QObject *parent = nullptr);
+    QString PlayerName;
+    QString OpponentName;
 
 
 private:
-    QString PlayerName;
+
 
 
 signals:
 
 public slots:
+    QString showPlayerName();
     void setPlayerName(QString name);
     void nextMove(int field);
     int whoIsWin();

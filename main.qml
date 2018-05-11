@@ -20,6 +20,24 @@ Window {
 
     title: qsTr("Tic-Tac-Wi-fi")
 
+
+    Connections{
+            target: network_core
+
+            onServerConnectedState:{
+                console.log(game_engine.showPlayerName())
+                bigbusy.visible = false
+                startItemDisAppear.running = true
+                cells.visible = true
+                statusTxt.visible = false
+
+
+            }
+        }
+
+
+
+
         Rectangle{
             id: head
             width: main.width
@@ -255,8 +273,11 @@ Window {
 
                      Button{
                         id: buttons
+                       // width: mainfield.width / 18
+                       // height: width
+
                         width: 60
-                        height: 60
+                        height: width
 
                         background: Rectangle{
                             anchors.fill: parent

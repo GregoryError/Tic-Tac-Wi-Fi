@@ -17,7 +17,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
     network_core.cpp \
-    game_engine.cpp
+    game_engine.cpp \
+    manager.cpp
 
 RESOURCES += qml.qrc
 
@@ -34,4 +35,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     network_core.h \
-    game_engine.h
+    game_engine.h \
+    manager.h

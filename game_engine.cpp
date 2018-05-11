@@ -5,6 +5,11 @@ game_engine::game_engine(QObject *parent) : QObject(parent)
 
 }
 
+QString game_engine::showPlayerName()
+{
+    return PlayerName;
+}
+
 void game_engine::setPlayerName(QString name)
 {
     PlayerName = name;
