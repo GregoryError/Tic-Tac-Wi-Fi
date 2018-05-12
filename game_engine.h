@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QString>
+#include <QDateTime>
+#include <QDebug>
 
 class game_engine : public QObject
 {
@@ -19,12 +21,15 @@ private:
 
 signals:
 
+
 public slots:
     QString showPlayerName();
     QString showOpponentName();
     void setPlayerName(QString name);
-    void nextMove(int field);
+    void nextMove(int who, int field);
     int whoIsWin();
+    int randomBetween();
+
 };
 
 #endif // GAME_ENGINE_H

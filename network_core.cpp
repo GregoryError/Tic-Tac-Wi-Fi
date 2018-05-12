@@ -39,6 +39,37 @@ network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
 }
 
 
+void network_core::gameProcess()
+{
+
+    int move = game_obj->randomBetween();
+
+    while(game_obj->whoIsWin() == 2)
+    {
+
+        if(move % 2 != 0)
+        {
+            emit opponentMove();
+            tellClientToMove();
+        }
+        else emit yourMove();
+        ++move;
+
+        if(move == 9)
+            break;
+
+    }
+
+}
+
+
+void network_core::tellClientToMove()
+{
+    sendToClient(socket, "move");
+}
+
+
+
 void network_core::client_Find()
 {
 
@@ -60,6 +91,8 @@ void network_core::startBroadcasting()
 
 void network_core::broadcastDatagram()
 {
+    qDebug() << QString::number(game_obj->randomBetween());
+
     QString ip;
 
     foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
@@ -150,6 +183,7 @@ void network_core::slotReadClient()
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString message = codec->toUnicode(socket->readAll());
+    if(message != "move")
     game_obj->OpponentName = message;
 
     qDebug() << message;

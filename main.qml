@@ -33,12 +33,13 @@ Window {
 
                 secondtimer.running = true
 
+                fillGroundDisAppear.running = true
+
+               // network_core.gameProcess();
+
+                firsttimer.running = true;
+
             }
-        }
-
-
-    Connections{
-            target: network_core
 
             onClientConnectedState:{
                 console.log(game_engine.showPlayerName())
@@ -49,8 +50,56 @@ Window {
 
                 secondtimer.running = true
 
+                fillGroundDisAppear.running = true
+
+
+
+            }
+
+            onOpponentMove:{
+                console.log("OPPONENT MOVE")
+
+                statusTxt.text = game_engine.showOpponentName() + " move!";
+                statusTxt.color = "#2ba1f3";
+                statusTxt.visible = true;
+
+
+
+                buttons.enabled = false
+
+            }
+
+            onYourMove:{
+                console.log("YOUR MOVE")
+
+                statusTxt.text = "Your move!";
+                statusTxt.color = "#2ba1f3";
+                statusTxt.visible = true;
+
+                buttons.enabled = true
+            }
+
+
+
+        }
+
+
+
+    Timer {
+        id: firsttimer
+            interval: 50;
+
+            onTriggered:{
+                    network_core.gameProcess();
             }
         }
+
+
+
+
+
+
+
 
 
 
@@ -117,6 +166,51 @@ Window {
          //
          //   }
 
+
+            Rectangle{
+                id: fillGround
+                visible: false
+                color: "#2cbaf1"
+                anchors.horizontalCenter: startItem.horizontalCenter
+                y: findButton.y + 130
+                width: 5
+                height: 3
+                radius: 2
+
+                ScaleAnimator{
+                    id: fillGroundAnim
+                    target: fillGround
+                    running: fillGround.visible
+                    from: 1
+                    to: 1000
+                    duration: 3500
+                    easing.type: Easing.OutExpo
+                    onStopped: {
+                       // some soundeffects
+                       // startItem.visible = false
+                        //startItemDisAppear.running = true
+                    }
+                }
+
+
+                OpacityAnimator{
+                    id: fillGroundDisAppear
+                    target: fillGround
+                    from: 1
+                    to: 0
+                    running: false
+                    duration: 300
+                    onStopped: {
+                        fillGround.visible = false
+                    }
+
+                }
+
+            }
+
+
+
+
             Item {
                 id: startItem
                 width: mainfield.width
@@ -177,14 +271,19 @@ Window {
 
 
                 onClicked: {
+                    fillGround.visible = true
                     game_engine.setPlayerName(nameInput.text)
                     bigbusy.running = true
-                    createButtonDis.running = true
-                    //startItemDisAppear.running = true
+
+                    startItem.visible = false
+
 
                     statusTxt.text = "Searching for server..."
                     statusTxtAnim.running = true
-                    firsttimer.running = true
+
+                    network_core.client_Find()
+
+
 
                 }
 
@@ -211,6 +310,11 @@ Window {
                 text: "Start server";
                 }
                 onClicked: {
+
+                    startItem.visible = false
+
+                    fillGround.visible = true
+
                     game_engine.setPlayerName(nameInput.text)
 
                     statusTxt.text = "Waiting for player..."
@@ -236,7 +340,7 @@ Window {
                     target: createButton
                     running: false
                     from: 1
-                    to: 550
+                    to: 1000
                     duration: 2300
                     easing.type: Easing.OutExpo
                     onStopped: {
@@ -313,7 +417,7 @@ Window {
                         }
                             onClicked: {
 
-
+                                  game_engine.nextMove(index);
                                 //buttons.enabled = false
                                 //buttontxt.visible = false
                                 //buttons.visible = false
@@ -386,10 +490,10 @@ Window {
                  id: firstName
                  visible: false
                  anchors.horizontalCenter: mainfield.horizontalCenter
-                 y: head.y + 15
+                 y: statusTxt.y + 30
                  font.pointSize: createButton.width / 9
                  font.family: "Sawasdee"
-                 color: "#2cbaf1"
+                 color: "#2ba1f3"
                  OpacityAnimator{
                      id: firstNameTxtAnim
                      target: firstName
@@ -430,7 +534,7 @@ Window {
                  anchors.topMargin: 5
                  font.pointSize: createButton.width / 9
                  font.family: "Sawasdee"
-                 color: "#2cbaf1"
+                 color: "#2ba1f3"
                  OpacityAnimator{
                      id: secondNameTxtAnim
                      target: secondName
@@ -455,22 +559,22 @@ Window {
 
 
 
-        Timer {
-            id: firsttimer
-                interval: 1750;
-
-                //running:
-
-                onTriggered:{
-                    network_core.client_Find()
-                    bigbusy.running = false               
-                    statusTxt.visible = false       
-                    cells.visible = true
-
-
-                }
-            }
-
+       // Timer {
+       //     id: firsttimer
+       //         interval: 1750;
+       //
+       //         //running:
+       //
+       //         onTriggered:{
+       //             network_core.client_Find()
+       //             bigbusy.running = false
+       //             statusTxt.visible = false
+       //             cells.visible = true
+       //
+       //
+       //         }
+       //     }
+       //
 
         BusyIndicator {
               id: bigbusy

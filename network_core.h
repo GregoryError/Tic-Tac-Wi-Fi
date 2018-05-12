@@ -57,6 +57,12 @@ signals:
     void serverConnectedState();
     void clientConnectedState();
 
+   void opponentMove();
+   void yourMove();
+
+   void opponentWin();
+   void youWin();
+
 
 public slots:
     virtual void slotNewConnection();
@@ -80,6 +86,9 @@ public slots:
     void client_sendToServer(const QString &msg);
     void client_Connected();
     bool client_is_Connected();
+
+    void tellClientToMove();
+    void gameProcess();
 
 
 
