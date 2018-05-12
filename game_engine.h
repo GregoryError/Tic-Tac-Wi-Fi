@@ -8,7 +8,7 @@ class game_engine : public QObject
 {
     Q_OBJECT
 public:
-    explicit game_engine(QObject *parent = nullptr);
+    game_engine(QObject *parent = nullptr);
     QString PlayerName;
     QString OpponentName;
 

@@ -36,6 +36,22 @@ Window {
         }
 
 
+    Connections{
+            target: network_core
+
+            onClientConnectedState:{
+                console.log(game_engine.showPlayerName())
+                bigbusy.visible = false
+                startItemDisAppear.running = true
+                cells.visible = true
+                statusTxt.visible = false
+
+
+            }
+        }
+
+
+
 
 
         Rectangle{
@@ -67,23 +83,7 @@ Window {
             height: main.height
             anchors.top: head.bottom
             anchors.fill: main
-            Text {
-                id: statusTxt
-                anchors.horizontalCenter: mainfield.horizontalCenter
-                y: head.y + 15
-                font.pointSize: createButton.width / 11
-                font.family: "Sawasdee"
-                color: "#2b92f1"
-                OpacityAnimator{
-                    id: statusTxtAnim
-                    target: statusTxt
-                    from: 0
-                    to: 1
-                    duration: 700
-                    running: false
-                    loops: Animation.Infinite
-                }
-            }
+
 
 
 
@@ -161,10 +161,13 @@ Window {
                     game_engine.setPlayerName(nameInput.text)
                     bigbusy.running = true
                     createButtonDis.running = true
+                    //startItemDisAppear.running = true
 
                     statusTxt.text = "Searching for server..."
                     statusTxtAnim.running = true
                     firsttimer.running = true
+
+
 
 
 
@@ -209,7 +212,7 @@ Window {
 
                     bigbusy.running = true
 
-
+                   // startItemDisAppear.running = true
 
 
                    // cells.visible = true    // this is temporary
@@ -222,12 +225,12 @@ Window {
                     running: false
                     from: 1
                     to: 550
-                    duration: 1700
+                    duration: 2300
                     easing.type: Easing.OutExpo
                     onStopped: {
                        // some soundeffects
                        // startItem.visible = false
-                        startItemDisAppear.running = true
+                        //startItemDisAppear.running = true
                     }
                 }
 
@@ -345,6 +348,28 @@ Window {
 
 
 
+             Text {
+                 id: statusTxt
+                 anchors.horizontalCenter: mainfield.horizontalCenter
+                 y: head.y + 15
+                 font.pointSize: createButton.width / 11
+                 font.family: "Sawasdee"
+                 color: "white"
+                 OpacityAnimator{
+                     id: statusTxtAnim
+                     target: statusTxt
+                     from: 0
+                     to: 1
+                     duration: 700
+                     running: false
+                     loops: Animation.Infinite
+                 }
+             }
+
+
+
+
+
 
 }
 
@@ -357,7 +382,7 @@ Window {
                 //running:
 
                 onTriggered:{
-                    network_core.client_FindAndConnect()
+                    network_core.client_Find()
                     bigbusy.running = false               
                     statusTxt.visible = false       
                     cells.visible = true
@@ -398,7 +423,7 @@ Window {
 
                             Behavior on opacity {
                                 OpacityAnimator {
-                                    duration: 1700
+                                    duration: 700
                                 }
                             }
 
@@ -421,7 +446,7 @@ Window {
                                     implicitWidth: 30
                                     implicitHeight: 30
                                     radius: 50
-                                    color: "#2b92f1"
+                                    color: "white"
                                     transform: [
                                         Translate {
                                             y: -Math.min(item.width, item.height) * 0.7

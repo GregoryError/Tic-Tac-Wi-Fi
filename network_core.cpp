@@ -9,6 +9,20 @@ network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
     Port = nPort;
     connect(server, SIGNAL(newConnection()), this, SLOT(slotNewConnection()));
 
+
+    serverUdpSocket = new QUdpSocket(this);
+    clientUdpSocket = new QUdpSocket(this);
+
+    connect(&server_timer, &QTimer::timeout, this, &network_core::broadcastDatagram);
+
+
+
+
+    connect(clientUdpSocket, SIGNAL(readyRead()),
+                this, SLOT(processPendingDatagrams()));
+
+
+
     // client
 
     ClientSocket = new QTcpSocket(this);
@@ -17,10 +31,74 @@ network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
     connect(ClientSocket, SIGNAL(readyRead()), SLOT(client_readyRead()));
     connect(ClientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(client_Error(QAbstractSocket::SocketError)));
 
-    connect(server, SIGNAL(destroyed(QObject*)), SLOT(server_stop()));
 
-    PlayerNm = obj->PlayerName;
+    game_obj = obj;
 
+    //PlayerNm = obj->PlayerName;
+
+}
+
+
+void network_core::client_Find()
+{
+
+  clientUdpSocket->bind(4243, QUdpSocket::ShareAddress);
+
+}
+
+void network_core::client_connect()
+{
+    ClientSocket->connectToHost(serverIP, Port);
+}
+
+
+
+void network_core::startBroadcasting()
+{
+    server_timer.start(500);
+}
+
+void network_core::broadcastDatagram()
+{
+    QString ip;
+
+    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost)){
+            ip = address.toString();
+
+            qDebug() << "ip: " << ip;
+        }
+    }
+
+    QByteArray server_datagram;
+
+    server_datagram = "tic-tac_" + ip.toUtf8();
+
+
+    serverUdpSocket->writeDatagram(server_datagram, QHostAddress::Broadcast, 4243);
+}
+
+void network_core::processPendingDatagrams()
+{
+    QByteArray client_datagram;
+       while (clientUdpSocket->hasPendingDatagrams()) {
+           client_datagram.resize(int(clientUdpSocket->pendingDatagramSize()));
+           clientUdpSocket->readDatagram(client_datagram.data(), client_datagram.size());
+
+           qDebug() << "Received datagram: " << client_datagram.data();
+
+           QString t_serverIP = client_datagram.data();
+           if(t_serverIP.mid(0, 7) == "tic-tac")
+           {
+              serverIP = t_serverIP.mid(8);
+              client_connect();
+              clientUdpSocket->deleteLater();
+
+           }
+
+           qDebug() << serverIP;
+
+       }
 }
 
 
@@ -66,6 +144,7 @@ void network_core::slotReadClient()
 
 void network_core::slotListen()
 {
+    startBroadcasting();
 
     if(!server->listen(QHostAddress::Any, Port))
     {
@@ -77,7 +156,18 @@ void network_core::slotListen()
 
 void network_core::client_readyRead()
 {
+
     qDebug() << ClientSocket->readAll();
+
+
+
+    if(isConnected || isConnectedOnServer)
+    {
+        game_obj->PlayerName = ClientSocket->readAll();
+
+    }
+
+
 }
 
 void network_core::client_Error(QAbstractSocket::SocketError err)
@@ -95,6 +185,7 @@ void network_core::client_Error(QAbstractSocket::SocketError err)
 
 void network_core::client_Connected()
 {
+    emit clientConnectedState();
     qDebug() << "Received the connected() signal.";
     isConnected = true;
 
@@ -112,83 +203,12 @@ bool network_core::isServerConnect()
     return isConnectedOnServer;
 }
 
+
 QString network_core::test_showIp()
 {
     return test_ip;
 }
 
-void network_core::client_FindAndConnect()
-{
-
-    myIpAddresses = QNetworkInterface::allAddresses();
-
-    QString local_ip = myIpAddresses[1].toString();
-
-    QString temp;
-
-    short itter(0);
-
-    for(auto &ch:local_ip)
-    {
-        if(ch == '.')
-            ++itter;
-        if(itter == 3)
-            break;
-        temp += ch;
-    }
-
-    unsigned short beg = 0;
-
-    QString possiblyServerAddress;
-
-    QTime time;
-
-
-    while(beg != 255)
-    {
-        ++beg;
-        possiblyServerAddress = temp + "." + QString::number(beg);
-
-
-
-        qDebug() << possiblyServerAddress;
-
-
-        time.start();
-
-        for(int i(0); i < 15;)
-        {
-            if(time.elapsed() > 15){
-                time.start();
-                ++i;
-            }
-        }
-
-        if(isConnected)
-            break;
-
-
-        //ClientSocket->abort();
-
-
-        test_ip = possiblyServerAddress;
-
-
-        ClientSocket->connectToHost(possiblyServerAddress, Port);
-
-        if(ClientSocket->waitForConnected(70))
-           break;
-
-
-
-
-
-        //ClientSocket->abort();    // Not sure about this
-    }
-
-
-
-}
 
 void network_core::client_sendToServer()
 {
