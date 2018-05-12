@@ -55,7 +55,7 @@ void network_core::client_connect()
 
 void network_core::startBroadcasting()
 {
-    server_timer.start(500);
+    server_timer.start(700);
 }
 
 void network_core::broadcastDatagram()
@@ -112,13 +112,20 @@ void network_core::slotNewConnection()
 
     //sendToClient(socket, "Connected!");
 
-    sendToClient(socket, PlayerNm);
+    sendToClient(socket, game_obj->PlayerName);
+
+    qDebug() << "Местное имя: " + game_obj->PlayerName;
 
     isConnectedOnServer = true;
+
+    server_timer.stop();
+    serverUdpSocket->deleteLater();
 
     emit serverConnectedState();
 
     qDebug() <<  "Someone just was connected.";
+
+
 
 
 }
@@ -130,15 +137,24 @@ void network_core::server_stop()
       server->disconnect();
    // server->deleteLater();
       server->close();
-    qDebug() << "on disconnected";
+      qDebug() << "on disconnected";
 
 }
 
 
 void network_core::slotReadClient()
 {
+    qDebug() << "Читаем клиента: ";
     socket = (QTcpSocket*)sender();
-    qDebug() << socket->readAll();
+
+
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString message = codec->toUnicode(socket->readAll());
+    game_obj->OpponentName = message;
+
+    qDebug() << message;
+
+
 }
 
 
@@ -157,15 +173,13 @@ void network_core::slotListen()
 void network_core::client_readyRead()
 {
 
-    qDebug() << ClientSocket->readAll();
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString message = codec->toUnicode(ClientSocket->readAll());
 
+    game_obj->OpponentName = message;
 
+    qDebug() << message;
 
-    if(isConnected || isConnectedOnServer)
-    {
-        game_obj->PlayerName = ClientSocket->readAll();
-
-    }
 
 
 }
@@ -188,6 +202,7 @@ void network_core::client_Connected()
     emit clientConnectedState();
     qDebug() << "Received the connected() signal.";
     isConnected = true;
+    client_sendToServer(game_obj->PlayerName);
 
 }
 
@@ -210,16 +225,14 @@ QString network_core::test_showIp()
 }
 
 
-void network_core::client_sendToServer()
+void network_core::client_sendToServer(const QString &msg)
 {
-    ClientSocket->write("I`am the client.");
-
+    ClientSocket->write(msg.toUtf8());
 }
 
 void network_core::sendToClient(QTcpSocket *socket, const QString &str)
 {
     socket->write(str.toUtf8());
-
 }
 
 

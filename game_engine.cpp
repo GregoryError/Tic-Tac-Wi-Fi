@@ -10,6 +10,11 @@ QString game_engine::showPlayerName()
     return PlayerName;
 }
 
+QString game_engine::showOpponentName()
+{
+    return OpponentName;
+}
+
 void game_engine::setPlayerName(QString name)
 {
     PlayerName = name;
@@ -24,3 +29,12 @@ int game_engine::whoIsWin()
 {
 
 }
+
+
+
+
+
+
+
+
+

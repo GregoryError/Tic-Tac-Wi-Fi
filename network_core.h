@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QTime>
+#include <QTextCodec>
 
 
 #include <QtNetwork/QHostAddress>
@@ -76,7 +77,7 @@ public slots:
     void client_Find();
     void client_readyRead();
     void client_Error(QAbstractSocket::SocketError);
-    void client_sendToServer();
+    void client_sendToServer(const QString &msg);
     void client_Connected();
     bool client_is_Connected();
 
@@ -85,3 +86,56 @@ public slots:
 };
 
 #endif // NETWORK_CORE_H
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

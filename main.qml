@@ -31,6 +31,7 @@ Window {
                 cells.visible = true
                 statusTxt.visible = false
 
+                secondtimer.running = true
 
             }
         }
@@ -46,7 +47,25 @@ Window {
                 cells.visible = true
                 statusTxt.visible = false
 
+                secondtimer.running = true
 
+            }
+        }
+
+
+
+
+    Timer {
+        id: secondtimer
+            interval: 500;
+
+           // running:
+
+            onTriggered:{
+
+                firstName.text = game_engine.showPlayerName();
+                secondName.text = game_engine.showOpponentName();
+                firstName.visible = true
             }
         }
 
@@ -167,14 +186,7 @@ Window {
                     statusTxtAnim.running = true
                     firsttimer.running = true
 
-
-
-
-
-
                 }
-
-
 
             }
 
@@ -365,6 +377,74 @@ Window {
                      loops: Animation.Infinite
                  }
              }
+
+
+
+
+
+             Text {
+                 id: firstName
+                 visible: false
+                 anchors.horizontalCenter: mainfield.horizontalCenter
+                 y: head.y + 15
+                 font.pointSize: createButton.width / 9
+                 font.family: "Sawasdee"
+                 color: "#2cbaf1"
+                 OpacityAnimator{
+                     id: firstNameTxtAnim
+                     target: firstName
+                     from: 0
+                     to: 1
+                     duration: 700
+                     running: firstName.visible
+                     loops: 7
+                 }
+             }
+
+             Text {
+                 id: vsTxt
+                 visible: firstName.visible
+                 anchors.horizontalCenter: mainfield.horizontalCenter
+                 anchors.top: firstName.bottom
+                 anchors.topMargin: 5
+                 font.pointSize: createButton.width / 11 - 2
+                 font.family: "Sawasdee"
+                 color: "#2cbaf1"
+                 text: "VS"
+                 OpacityAnimator{
+                     id: vsTxttAnim
+                     target: vsTxt
+                     from: 0
+                     to: 1
+                     duration: 700
+                     running: firstName.visible
+                     loops: 7
+                 }
+             }
+
+             Text {
+                 id: secondName
+                 visible: firstName.visible
+                 anchors.horizontalCenter: mainfield.horizontalCenter
+                 anchors.top: vsTxt.bottom
+                 anchors.topMargin: 5
+                 font.pointSize: createButton.width / 9
+                 font.family: "Sawasdee"
+                 color: "#2cbaf1"
+                 OpacityAnimator{
+                     id: secondNameTxtAnim
+                     target: secondName
+                     from: 0
+                     to: 1
+                     duration: 700
+                     running: firstName.visible
+                     loops: 7
+                 }
+             }
+
+
+
+
 
 
 

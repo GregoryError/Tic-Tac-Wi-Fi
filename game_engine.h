@@ -21,6 +21,7 @@ signals:
 
 public slots:
     QString showPlayerName();
+    QString showOpponentName();
     void setPlayerName(QString name);
     void nextMove(int field);
     int whoIsWin();
