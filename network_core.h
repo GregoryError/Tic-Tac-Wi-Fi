@@ -80,15 +80,19 @@ public slots:
     QString test_showIp();
 
     void client_connect();
-    void client_Find();
     void client_readyRead();
-    void client_Error(QAbstractSocket::SocketError);
-    void client_sendToServer(const QString &msg);
     void client_Connected();
+
+    void client_Find(); 
+    void client_Error(QAbstractSocket::SocketError);
+    void client_sendToServer(const QString &msg);    
     bool client_is_Connected();
+
+
 
     void tellClientToMove();
     void gameProcess();
+    void disableRemCell(int ind);
 
 
 

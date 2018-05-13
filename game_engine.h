@@ -26,7 +26,7 @@ public slots:
     QString showPlayerName();
     QString showOpponentName();
     void setPlayerName(QString name);
-    void nextMove(int who, int field);
+    void nextMove(int field);
     int whoIsWin();
     int randomBetween();
 

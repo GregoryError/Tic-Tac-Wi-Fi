@@ -29,7 +29,8 @@ network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
 
     connect(ClientSocket, SIGNAL(connected()), SLOT(client_Connected()));
     connect(ClientSocket, SIGNAL(readyRead()), SLOT(client_readyRead()));
-    connect(ClientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(client_Error(QAbstractSocket::SocketError)));
+    connect(ClientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this,
+            SLOT(client_Error(QAbstractSocket::SocketError)));
 
 
     game_obj = obj;
@@ -42,24 +43,33 @@ network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
 void network_core::gameProcess()
 {
 
-    int move = game_obj->randomBetween();
+     tellClientToMove();
 
-    while(game_obj->whoIsWin() == 2)
-    {
+ //   int move = game_obj->randomBetween();
+ //
+ //   while(game_obj->whoIsWin() == 2)
+ //   {
+ //
+ //       if(move % 2 != 0)
+ //       {
+ //           emit opponentMove();
+ //           tellClientToMove();
+ //       }
+ //       else emit yourMove();
+ //
+ //
+ //       ++move;
+ //
+ //       if(move == 1)
+ //           break;
+ //
+ //   }
 
-        if(move % 2 != 0)
-        {
-            emit opponentMove();
-            tellClientToMove();
-        }
-        else emit yourMove();
-        ++move;
+}
 
-        if(move == 9)
-            break;
-
-    }
-
+void network_core::disableRemCell(int ind)
+{
+    sendToClient(socket, QString::number(ind));
 }
 
 
@@ -96,7 +106,8 @@ void network_core::broadcastDatagram()
     QString ip;
 
     foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
-        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost)){
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address !=
+                QHostAddress(QHostAddress::LocalHost)){
             ip = address.toString();
 
             qDebug() << "ip: " << ip;
@@ -118,7 +129,7 @@ void network_core::processPendingDatagrams()
            client_datagram.resize(int(clientUdpSocket->pendingDatagramSize()));
            clientUdpSocket->readDatagram(client_datagram.data(), client_datagram.size());
 
-           qDebug() << "Received datagram: " << client_datagram.data();
+           //qDebug() << "Received datagram: " << client_datagram.data();
 
            QString t_serverIP = client_datagram.data();
            if(t_serverIP.mid(0, 7) == "tic-tac")
@@ -129,7 +140,7 @@ void network_core::processPendingDatagrams()
 
            }
 
-           qDebug() << serverIP;
+          // qDebug() << serverIP;
 
        }
 }
@@ -183,7 +194,6 @@ void network_core::slotReadClient()
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString message = codec->toUnicode(socket->readAll());
-    if(message != "move")
     game_obj->OpponentName = message;
 
     qDebug() << message;
@@ -210,6 +220,7 @@ void network_core::client_readyRead()
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString message = codec->toUnicode(ClientSocket->readAll());
 
+    if(message != "move")
     game_obj->OpponentName = message;
 
     qDebug() << message;
@@ -234,10 +245,9 @@ void network_core::client_Error(QAbstractSocket::SocketError err)
 void network_core::client_Connected()
 {
     emit clientConnectedState();
-    qDebug() << "Received the connected() signal.";
+    qDebug() << "client_Connected() slot";
     isConnected = true;
     client_sendToServer(game_obj->PlayerName);
-
 }
 
 bool network_core::client_is_Connected()

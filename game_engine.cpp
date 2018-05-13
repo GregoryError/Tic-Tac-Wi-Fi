@@ -21,7 +21,7 @@ void game_engine::setPlayerName(QString name)
     PlayerName = name;
 }
 
-void game_engine::nextMove(int who, int field)
+void game_engine::nextMove(int field)
 {
     QString str = QString::number(field);
     qDebug() << str;

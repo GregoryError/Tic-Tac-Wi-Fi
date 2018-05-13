@@ -56,32 +56,38 @@ Window {
 
             }
 
-            onOpponentMove:{
-                console.log("OPPONENT MOVE")
-
-                statusTxt.text = game_engine.showOpponentName() + " move!";
-                statusTxt.color = "#2ba1f3";
-                statusTxt.visible = true;
-
-
-
-                buttons.enabled = false
-
-            }
-
-            onYourMove:{
-                console.log("YOUR MOVE")
-
-                statusTxt.text = "Your move!";
-                statusTxt.color = "#2ba1f3";
-                statusTxt.visible = true;
-
-                buttons.enabled = true
-            }
-
-
 
         }
+
+
+    Connections{
+        target: network_core
+
+        onOpponentMove:{
+            console.log("OPPONENT MOVE")
+
+            statusTxt.text = game_engine.showOpponentName() + " move!";
+            statusTxt.color = "#2ba1f3";
+            statusTxt.visible = true;
+
+
+
+            buttons.enabled = false
+
+        }
+
+        onYourMove:{
+            console.log("YOUR MOVE")
+
+            statusTxt.text = "Your move!";
+            statusTxt.y = cells.y - 70
+            statusTxt.color = "#2ba1f3";
+            statusTxt.visible = true;
+
+            buttons.enabled = true
+        }
+
+    }
 
 
 
@@ -371,7 +377,6 @@ Window {
 
 }
 
-
              Grid{
                  id: cells
                  anchors.horizontalCenter: parent.horizontalCenter
@@ -399,6 +404,7 @@ Window {
                         height: width
 
                         background: Rectangle{
+                            id: buttBack
                             anchors.fill: parent
                             radius: 3
                             color: "#2cbaf1"
@@ -418,8 +424,16 @@ Window {
                             onClicked: {
 
                                   game_engine.nextMove(index);
-                                //buttons.enabled = false
-                                //buttontxt.visible = false
+
+
+
+
+
+                                  buttBack.color = "pink"
+
+                                  buttons.enabled = false
+
+                                                                   //buttontxt.visible = false
                                 //buttons.visible = false
 
 
@@ -447,19 +461,19 @@ Window {
             }
 
 
-             TextArea{
-                 id: testZone
-                 width: Screen.width - 100
-                 height: 250
-
-                 anchors.horizontalCenter: mainfield.horizontalCenter
-                 anchors.top: cells.bottom
-                 font.family: "Sawasdee"
-                 font.pixelSize: 20
-                 text: network_core.test_showIp()
-
-             }
-
+        //     TextArea{
+        //         id: testZone
+        //         width: Screen.width - 100
+        //         height: 250
+        //
+        //         anchors.horizontalCenter: mainfield.horizontalCenter
+        //         anchors.top: cells.bottom
+        //         font.family: "Sawasdee"
+        //         font.pixelSize: 20
+        //         text: network_core.test_showIp()
+        //
+        //     }
+        //
 
 
 
@@ -490,7 +504,7 @@ Window {
                  id: firstName
                  visible: false
                  anchors.horizontalCenter: mainfield.horizontalCenter
-                 y: statusTxt.y + 30
+                 y: head.y + statusTxt.height + 30
                  font.pointSize: createButton.width / 9
                  font.family: "Sawasdee"
                  color: "#2ba1f3"
