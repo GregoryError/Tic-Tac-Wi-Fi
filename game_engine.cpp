@@ -38,6 +38,6 @@ int game_engine::whoIsWin()
 int game_engine::randomBetween()
 {
     qsrand(QDateTime::currentMSecsSinceEpoch());
-    return qrand() % 2; //((1 + 1) - 0) + 0);
+    return qrand() % 2;
 }
 

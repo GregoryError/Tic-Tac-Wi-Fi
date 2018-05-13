@@ -60,6 +60,10 @@ Window {
         }
 
 
+
+
+
+
     Connections{
         target: network_core
 
@@ -72,7 +76,7 @@ Window {
 
 
 
-            buttons.enabled = false
+            cells.enabled = false
 
         }
 
@@ -84,10 +88,22 @@ Window {
             statusTxt.color = "#2ba1f3";
             statusTxt.visible = true;
 
-            buttons.enabled = true
+            cells.enabled = true
+        }
+
+
+        onChangeCell:{
+            //rpt.itemAt(network_core.changeCellN()).visible = false
+            rpt.itemAt(2)
+
         }
 
     }
+
+
+
+
+
 
 
 
@@ -382,10 +398,8 @@ Window {
                  anchors.horizontalCenter: parent.horizontalCenter
                  y: mainfield.height / 2
 
-                // anchors.fill: parent
-
                  visible: false
-
+                 enabled: false
                  columns: 3
                  rows: 3
                  spacing: 7
@@ -397,8 +411,6 @@ Window {
 
                      Button{
                         id: buttons
-                       // width: mainfield.width / 18
-                       // height: width
 
                         width: 60
                         height: width
@@ -429,7 +441,7 @@ Window {
 
 
 
-                                  buttBack.color = "pink"
+                                  buttBack.color = "green"
 
                                   buttons.enabled = false
 
@@ -456,6 +468,9 @@ Window {
                     // some soundeffects
                  }
              }
+
+
+
 
 
             }
@@ -641,8 +656,8 @@ Window {
                                 Rectangle {
                                     x: item.width / 2 - width / 7
                                     y: item.height / 2 - height / 7
-                                    implicitWidth: 30
-                                    implicitHeight: 30
+                                    implicitWidth: 25
+                                    implicitHeight: 25
                                     radius: 50
                                     color: "white"
                                     transform: [

@@ -26,6 +26,8 @@ public:
 
     game_engine *game_obj = nullptr;
 
+    int CellToChange = 0;
+
 private:
     QTcpServer *server;
     QTcpSocket *socket;
@@ -63,6 +65,8 @@ signals:
    void opponentWin();
    void youWin();
 
+   void changeCell();
+
 
 public slots:
     virtual void slotNewConnection();
@@ -93,6 +97,7 @@ public slots:
     void tellClientToMove();
     void gameProcess();
     void disableRemCell(int ind);
+    short changeCellN();
 
 
 

@@ -67,15 +67,22 @@ void network_core::gameProcess()
 
 }
 
+
+void network_core::tellClientToMove()
+{
+    sendToClient(socket, "move");
+}
+
+
+
 void network_core::disableRemCell(int ind)
 {
     sendToClient(socket, QString::number(ind));
 }
 
-
-void network_core::tellClientToMove()
+short network_core::changeCellN()
 {
-    sendToClient(socket, "move");
+    return CellToChange;
 }
 
 
@@ -220,10 +227,23 @@ void network_core::client_readyRead()
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString message = codec->toUnicode(ClientSocket->readAll());
 
-    if(message != "move")
-    game_obj->OpponentName = message;
 
-    qDebug() << message;
+    qDebug() << "message: " + message;
+
+    if(message != "move" && message.length() != 1)
+        game_obj->OpponentName = message;
+    else if(message == "move")
+    {
+        emit yourMove();
+    }else if(message.length() == 1)
+    {
+        CellToChange = message.toInt();
+        qDebug() << message + " - будет изменен.";
+        emit changeCell();
+    }
+
+
+
 
 
 
