@@ -67,6 +67,28 @@ signals:
 
    void changeCell();
 
+   // gamefield managing:
+
+   void set_X_on_0();
+   void set_X_on_1();
+   void set_X_on_2();
+   void set_X_on_3();
+   void set_X_on_4();
+   void set_X_on_5();
+   void set_X_on_6();
+   void set_X_on_7();
+   void set_X_on_8();
+
+   void set_0_on_0();
+   void set_0_on_1();
+   void set_0_on_2();
+   void set_0_on_3();
+   void set_0_on_4();
+   void set_0_on_5();
+   void set_0_on_6();
+   void set_0_on_7();
+   void set_0_on_8();
+
 
 public slots:
     virtual void slotNewConnection();

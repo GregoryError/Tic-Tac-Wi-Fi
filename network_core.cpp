@@ -239,11 +239,76 @@ void network_core::client_readyRead()
     {
         CellToChange = message.toInt();
         qDebug() << message + " - будет изменен.";
-        emit changeCell();
+
+
+        switch (CellToChange) {
+        case 0:
+            emit set_0_on_0();
+            break;
+        case 1:
+            emit set_0_on_1();
+            break;
+        case 2:
+            emit set_0_on_2();
+            break;
+        case 3:
+            emit set_0_on_3();
+            break;
+        case 4:
+            emit set_0_on_4();
+            break;
+        case 5:
+            emit set_0_on_5();
+            break;
+        case 6:
+            emit set_0_on_6();
+            break;
+        case 7:
+            emit set_0_on_7();
+            break;
+        case 8:
+            emit set_0_on_8();
+            break;
+
+        default:
+            break;
+        }
+
+        switch (CellToChange) {
+        case 0:
+            emit set_X_on_0();
+            break;
+        case 1:
+            emit set_X_on_1();
+            break;
+        case 2:
+            emit set_X_on_2();
+            break;
+        case 3:
+            emit set_X_on_3();
+            break;
+        case 4:
+            emit set_X_on_4();
+            break;
+        case 5:
+            emit set_X_on_5();
+            break;
+        case 6:
+            emit set_X_on_6();
+            break;
+        case 7:
+            emit set_X_on_7();
+            break;
+        case 8:
+            emit set_X_on_8();
+            break;
+
+        default:
+            break;
+        }
+
+
     }
-
-
-
 
 
 
