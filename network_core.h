@@ -8,7 +8,6 @@
 #include <QString>
 #include <QDebug>
 #include <QTimer>
-#include <QTime>
 #include <QTextCodec>
 
 
@@ -34,7 +33,7 @@ private:
     int Port;
     void sendToClient(QTcpSocket *socket, const QString &str);
 
-    QUdpSocket *serverUdpSocket = nullptr;
+    QUdpSocket *serverUdpSocket = nullptr;   // for broadcasting purposes
     QUdpSocket *clientUdpSocket = nullptr;
 
     QTimer server_timer;
@@ -44,14 +43,8 @@ private:
 
 private:      // client
     QTcpSocket *ClientSocket;
-    QList<QHostAddress> myIpAddresses;
     bool isConnected = false;
     bool isConnectedOnServer = false;
-
-    QString test_ip;
-
-
-
 
 
 
@@ -59,35 +52,34 @@ signals:
     void serverConnectedState();
     void clientConnectedState();
 
-   void opponentMove();
-   void yourMove();
+    void opponentMove();
+    void yourMove();
 
-   void opponentWin();
-   void youWin();
+    void opponentWin();
+    void youWin();
 
-   void changeCell();
 
-   // gamefield managing:
+    // gamefield managing:
 
-   void set_X_on_0();
-   void set_X_on_1();
-   void set_X_on_2();
-   void set_X_on_3();
-   void set_X_on_4();
-   void set_X_on_5();
-   void set_X_on_6();
-   void set_X_on_7();
-   void set_X_on_8();
+    void set_X_on_0();
+    void set_X_on_1();
+    void set_X_on_2();
+    void set_X_on_3();
+    void set_X_on_4();
+    void set_X_on_5();
+    void set_X_on_6();
+    void set_X_on_7();
+    void set_X_on_8();
 
-   void set_0_on_0();
-   void set_0_on_1();
-   void set_0_on_2();
-   void set_0_on_3();
-   void set_0_on_4();
-   void set_0_on_5();
-   void set_0_on_6();
-   void set_0_on_7();
-   void set_0_on_8();
+    void set_0_on_0();
+    void set_0_on_1();
+    void set_0_on_2();
+    void set_0_on_3();
+    void set_0_on_4();
+    void set_0_on_5();
+    void set_0_on_6();
+    void set_0_on_7();
+    void set_0_on_8();
 
 
 public slots:
@@ -96,6 +88,7 @@ public slots:
     void slotListen();
     void server_stop();
     bool isServerConnect();
+    void justsendToClient(QString str);
 
     void startBroadcasting();
     void broadcastDatagram();
@@ -103,23 +96,17 @@ public slots:
     void processPendingDatagrams();
 
 
-    QString test_showIp();
-
     void client_connect();
     void client_readyRead();
     void client_Connected();
 
-    void client_Find(); 
+    void client_Find();
     void client_Error(QAbstractSocket::SocketError);
-    void client_sendToServer(const QString &msg);    
+    void client_sendToServer(const QString &msg);
     bool client_is_Connected();
 
 
-
-    void tellClientToMove();
-    void gameProcess();
-    void disableRemCell(int ind);
-    short changeCellN();
+    void gameInit();
 
 
 

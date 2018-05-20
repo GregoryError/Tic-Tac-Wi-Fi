@@ -14,6 +14,7 @@ Window {
     id: main
     height: 960       // Don`t forget to change it, before build for target
     width: 540
+
     
     // height: Screen.height
     // width: Screen.width
@@ -65,7 +66,7 @@ Window {
         interval: 50;
         
         onTriggered:{
-            network_core.gameProcess();
+            network_core.gameInit();
         }
     }
     
@@ -111,10 +112,9 @@ Window {
         height: main.height
         anchors.top: head.bottom
         anchors.fill: main
-        
-        
-        
-        
+
+
+
         
         //   Rectangle{
         //       anchors.fill: parent
@@ -375,60 +375,78 @@ Window {
 
             onSet_X_on_0:{
                 myModel.get(0).backdata = "qrc:/cross.png"
+                myModel.get(0).active = false
             }
             onSet_X_on_1:{
                 myModel.get(1).backdata = "qrc:/cross.png"
+                myModel.get(1).active = false
             }
             onSet_X_on_2:{
                 myModel.get(2).backdata = "qrc:/cross.png"
+                myModel.get(2).active = false
             }
             onSet_X_on_3:{
                 myModel.get(3).backdata = "qrc:/cross.png"
+                myModel.get(3).active = false
             }
             onSet_X_on_4:{
                 myModel.get(4).backdata = "qrc:/cross.png"
+                myModel.get(4).active = false
             }
             onSet_X_on_5:{
                 myModel.get(5).backdata = "qrc:/cross.png"
+                myModel.get(5).active = false
             }
             onSet_X_on_6:{
                 myModel.get(6).backdata = "qrc:/cross.png"
+                myModel.get(6).active = false
             }
             onSet_X_on_7:{
                 myModel.get(7).backdata = "qrc:/cross.png"
+                myModel.get(7).active = false
             }
             onSet_X_on_8:{
                 myModel.get(8).backdata = "qrc:/cross.png"
+                myModel.get(8).active = false
             }
 
             ///////////
 
             onSet_0_on_0:{
                 myModel.get(0).backdata = "qrc:/circle.png"
+                myModel.get(0).active = false
             }
             onSet_0_on_1:{
                 myModel.get(1).backdata = "qrc:/circle.png"
+                myModel.get(1).active = false
             }
             onSet_0_on_2:{
                 myModel.get(2).backdata = "qrc:/circle.png"
+                myModel.get(2).active = false
             }
             onSet_0_on_3:{
                 myModel.get(3).backdata = "qrc:/circle.png"
+                myModel.get(3).active = false
             }
             onSet_0_on_4:{
                 myModel.get(4).backdata = "qrc:/circle.png"
+                myModel.get(4).active = false
             }
             onSet_0_on_5:{
                 myModel.get(5).backdata = "qrc:/circle.png"
+                myModel.get(5).active = false
             }
             onSet_0_on_6:{
                 myModel.get(6).backdata = "qrc:/circle.png"
+                myModel.get(6).active = false
             }
             onSet_0_on_7:{
                 myModel.get(7).backdata = "qrc:/circle.png"
+                myModel.get(7).active = false
             }
             onSet_0_on_8:{
                 myModel.get(8).backdata = "qrc:/circle.png"
+                myModel.get(8).active = false
             }
 
 
@@ -443,45 +461,54 @@ Window {
             ListElement {
                 mycolor: "#2cbaf1"
                 backdata: "null"
+                active: true
             }
             ListElement {
                 mycolor: "#2cbaf1"
                 backdata: "null"
-            }
-
-            ListElement {
-                mycolor: "#2cbaf1"
-                backdata: "null"
+                active: true
             }
 
             ListElement {
                 mycolor: "#2cbaf1"
                 backdata: "null"
+                active: true
             }
 
             ListElement {
                 mycolor: "#2cbaf1"
                 backdata: "null"
+                active: true
             }
 
             ListElement {
                 mycolor: "#2cbaf1"
                 backdata: "null"
+                active: true
             }
 
             ListElement {
                 mycolor: "#2cbaf1"
                 backdata: "null"
+                active: true
             }
 
             ListElement {
                 mycolor: "#2cbaf1"
                 backdata: "null"
+                active: true
             }
 
             ListElement {
                 mycolor: "#2cbaf1"
                 backdata: "null"
+                active: true
+            }
+
+            ListElement {
+                mycolor: "#2cbaf1"
+                backdata: "null"
+                active: true
             }
 
         }
@@ -509,6 +536,7 @@ Window {
 
                     Button{
                         id: buttons
+                        enabled: active
                         width: oneCell.width
                         height: oneCell.height
                         background: Rectangle{
@@ -540,6 +568,7 @@ Window {
                         }
                         onClicked: {
                             console.log(index)
+                            network_core.justsendToClient(index);
                         }
 
                     }
@@ -809,7 +838,7 @@ Window {
                 from: 0
                 to: 360
                 loops: Animation.Infinite
-                duration: 2500
+                duration: 2200
             }
             
             Repeater {

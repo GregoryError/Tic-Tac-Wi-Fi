@@ -13,13 +13,11 @@ network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
     serverUdpSocket = new QUdpSocket(this);
     clientUdpSocket = new QUdpSocket(this);
 
+
     connect(&server_timer, &QTimer::timeout, this, &network_core::broadcastDatagram);
 
-
-
-
     connect(clientUdpSocket, SIGNAL(readyRead()),
-                this, SLOT(processPendingDatagrams()));
+            this, SLOT(processPendingDatagrams()));
 
 
 
@@ -35,62 +33,399 @@ network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
 
     game_obj = obj;
 
-    //PlayerNm = obj->PlayerName;
-
 }
 
 
-void network_core::gameProcess()
+
+
+void network_core::gameInit()
 {
 
-     tellClientToMove();
+    game_obj->playerType = game_obj->randomBetween();
 
- //   int move = game_obj->randomBetween();
- //
- //   while(game_obj->whoIsWin() == 2)
- //   {
- //
- //       if(move % 2 != 0)
- //       {
- //           emit opponentMove();
- //           tellClientToMove();
- //       }
- //       else emit yourMove();
- //
- //
- //       ++move;
- //
- //       if(move == 1)
- //           break;
- //
- //   }
+    if(game_obj->playerType == 0)
+    {
+        emit opponentMove();
+        sendToClient(socket, "setTypeAs1");   // I`am 'zero', you re 'cross'
+    }
+
+    if(game_obj->playerType == 1)
+    {
+        emit yourMove();
+        sendToClient(socket, "setTypeAs0");   // I`am 'cross', you re 'zero'
+    }
 
 }
 
 
-void network_core::tellClientToMove()
+
+
+void network_core::slotReadClient()
 {
-    sendToClient(socket, "move");
+    qDebug() << "Читаем клиента: ";
+    socket = (QTcpSocket*)sender();
+
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString message = codec->toUnicode(socket->readAll());
+    game_obj->OpponentName = message;
+
+    qDebug() << message;
+
+
+
+
+    if(message.length() != 1)
+    {
+        game_obj->OpponentName = message;            // If there is a name in a message, remember it.
+    }
+
+
+    if(message.length() == 1)
+    {
+        CellToChange = message.toInt();
+
+        qDebug() << "Клиент просит изменить клетку №: " + message;
+
+
+        if(game_obj->playerType == 1)
+        {
+            switch (CellToChange) {
+            case 0:
+                emit set_0_on_0();
+                break;
+            case 1:
+                emit set_0_on_1();
+                break;
+            case 2:
+                emit set_0_on_2();
+                break;
+            case 3:
+                emit set_0_on_3();
+                break;
+            case 4:
+                emit set_0_on_4();
+                break;
+            case 5:
+                emit set_0_on_5();
+                break;
+            case 6:
+                emit set_0_on_6();
+                break;
+            case 7:
+                emit set_0_on_7();
+                break;
+            case 8:
+                emit set_0_on_8();
+                break;
+
+            default:
+                break;
+            }
+
+        }
+
+        if(game_obj->playerType == 0)
+        {
+            switch (CellToChange) {
+            case 0:
+                emit set_X_on_0();
+                break;
+            case 1:
+                emit set_X_on_1();
+                break;
+            case 2:
+                emit set_X_on_2();
+                break;
+            case 3:
+                emit set_X_on_3();
+                break;
+            case 4:
+                emit set_X_on_4();
+                break;
+            case 5:
+                emit set_X_on_5();
+                break;
+            case 6:
+                emit set_X_on_6();
+                break;
+            case 7:
+                emit set_X_on_7();
+                break;
+            case 8:
+                emit set_X_on_8();
+                break;
+
+            default:
+                break;
+            }
+
+
+        }
+
+
+
+        if(game_obj->playerType == 0)
+        {
+            game_obj->nextMove(1, CellToChange);
+        }
+        if(game_obj->playerType == 1)
+        {
+            game_obj->nextMove(0, CellToChange);
+        }
+
+
+
+
+    }
+
+
+
+    if(game_obj->whoIsWin() == 0)
+        qDebug() << "You win!";
+    else if(game_obj->whoIsWin() == 1)
+        qDebug() << "Your opponent win!";
+
+
 }
 
 
 
-void network_core::disableRemCell(int ind)
+
+void network_core::slotNewConnection()
 {
-    sendToClient(socket, QString::number(ind));
+    isConnectedOnServer = true;
+    server_timer.stop();
+    serverUdpSocket->deleteLater();
+
+    emit serverConnectedState();
+
+
+    socket = server->nextPendingConnection();
+
+    connect(socket, SIGNAL(disconnected()), this, SLOT(server_stop()));
+
+    connect(socket, SIGNAL(readyRead()), this, SLOT(slotReadClient()));
+
+    sendToClient(socket, game_obj->PlayerName);
+
+    qDebug() << "Местное имя: " + game_obj->PlayerName;
+
+    gameInit();
+
+    qDebug() <<  "Someone just was connected. The name was sent and gameInit was started.";
+
+
 }
 
-short network_core::changeCellN()
+
+
+
+void network_core::client_readyRead()
 {
-    return CellToChange;
+
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString message = codec->toUnicode(ClientSocket->readAll());
+
+
+    //qDebug() << "first-10-char message: " + message.mid(0, 10);
+
+
+    if(message != "setTypeAs1"  && message != "setTypeAs0"
+            && message.length() != 1)
+    {
+        game_obj->OpponentName = message;
+        qDebug() << "Received opponent name: " + message;
+    }
+
+    else if(message.mid(0, 10) == "setTypeAs0")
+    {
+        game_obj->playerType = 0;
+        opponentMove();
+    } else if(message.mid(0, 10) == "setTypeAs1")
+    {
+        game_obj->playerType = 1;
+        emit yourMove();     // make cells enabled
+    }
+
+
+
+    if(message.length() == 1)
+    {
+        CellToChange = message.toInt();
+
+        qDebug() << message + " - будет изменен.";
+
+        if(game_obj->playerType == 0)
+        {
+            game_obj->nextMove(0, CellToChange);
+            switch (CellToChange) {
+            case 0:
+                emit set_0_on_0();
+                break;
+            case 1:
+                emit set_0_on_1();
+                break;
+            case 2:
+                emit set_0_on_2();
+                break;
+            case 3:
+                emit set_0_on_3();
+                break;
+            case 4:
+                emit set_0_on_4();
+                break;
+            case 5:
+                emit set_0_on_5();
+                break;
+            case 6:
+                emit set_0_on_6();
+                break;
+            case 7:
+                emit set_0_on_7();
+                break;
+            case 8:
+                emit set_0_on_8();
+                break;
+
+            default:
+                break;
+            }
+
+        }
+
+        if(game_obj->playerType == 1)
+        {
+            game_obj->nextMove(1, CellToChange);
+            switch (CellToChange) {
+            case 0:
+                emit set_X_on_0();
+                break;
+            case 1:
+                emit set_X_on_1();
+                break;
+            case 2:
+                emit set_X_on_2();
+                break;
+            case 3:
+                emit set_X_on_3();
+                break;
+            case 4:
+                emit set_X_on_4();
+                break;
+            case 5:
+                emit set_X_on_5();
+                break;
+            case 6:
+                emit set_X_on_6();
+                break;
+            case 7:
+                emit set_X_on_7();
+                break;
+            case 8:
+                emit set_X_on_8();
+                break;
+
+            default:
+                break;
+            }
+
+
+        }
+
+
+    }
+    if(game_obj->whoIsWin() == 0)
+        qDebug() << "You win!";
+    else if(game_obj->whoIsWin() == 1)
+        qDebug() << "Your opponent win!";
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void network_core::client_sendToServer(const QString &msg)
+{
+    ClientSocket->write(msg.toUtf8());
+    ClientSocket->waitForBytesWritten();
+}
+
+void network_core::sendToClient(QTcpSocket *socket, const QString &str)
+{
+    socket->write(str.toUtf8());
+    socket->waitForBytesWritten();
+
+}
+
+
+
+
+
+
+
+void network_core::client_Error(QAbstractSocket::SocketError err)
+{
+    QString strError =
+            "Error: " + (err == QAbstractSocket::HostNotFoundError ?
+                             "The host wasn`t found." :
+                             err == QAbstractSocket::RemoteHostClosedError ?
+                                 "The remoute host is closed." :
+                                 err == QAbstractSocket::ConnectionRefusedError ?
+                                     "The connection was refused." :
+                                     QString(ClientSocket->errorString()));
+    qDebug() << strError;
+}
+
+void network_core::client_Connected()
+{
+    emit clientConnectedState();
+    qDebug() << "client_Connected() slot";
+    isConnected = true;
+    client_sendToServer(game_obj->PlayerName);
+}
+
+
+bool network_core::client_is_Connected()
+{
+    return isConnected;
+}
+
+
+
+bool network_core::isServerConnect()
+{
+    return isConnectedOnServer;
+}
+
+void network_core::justsendToClient(QString str)
+{
+    sendToClient(socket, str);
+}
 
 
 void network_core::client_Find()
 {
 
-  clientUdpSocket->bind(4243, QUdpSocket::ShareAddress);
+    clientUdpSocket->bind(4243, QUdpSocket::ShareAddress);
 
 }
 
@@ -132,81 +467,38 @@ void network_core::broadcastDatagram()
 void network_core::processPendingDatagrams()
 {
     QByteArray client_datagram;
-       while (clientUdpSocket->hasPendingDatagrams()) {
-           client_datagram.resize(int(clientUdpSocket->pendingDatagramSize()));
-           clientUdpSocket->readDatagram(client_datagram.data(), client_datagram.size());
+    while (clientUdpSocket->hasPendingDatagrams()) {
+        client_datagram.resize(int(clientUdpSocket->pendingDatagramSize()));
+        clientUdpSocket->readDatagram(client_datagram.data(), client_datagram.size());
 
-           //qDebug() << "Received datagram: " << client_datagram.data();
+        //qDebug() << "Received datagram: " << client_datagram.data();
 
-           QString t_serverIP = client_datagram.data();
-           if(t_serverIP.mid(0, 7) == "tic-tac")
-           {
-              serverIP = t_serverIP.mid(8);
-              client_connect();
-              clientUdpSocket->deleteLater();
+        QString t_serverIP = client_datagram.data();
+        if(t_serverIP.mid(0, 7) == "tic-tac")
+        {
+            serverIP = t_serverIP.mid(8);
+            client_connect();
+            clientUdpSocket->deleteLater();
 
-           }
+        }
 
-          // qDebug() << serverIP;
+        // qDebug() << serverIP;
 
-       }
+    }
 }
 
-
-void network_core::slotNewConnection()
-{
-    socket = server->nextPendingConnection();
-
-    connect(socket, SIGNAL(disconnected()), this, SLOT(server_stop()));
-
-    connect(socket, SIGNAL(readyRead()), this, SLOT(slotReadClient()));
-
-    //sendToClient(socket, "Connected!");
-
-    sendToClient(socket, game_obj->PlayerName);
-
-    qDebug() << "Местное имя: " + game_obj->PlayerName;
-
-    isConnectedOnServer = true;
-
-    server_timer.stop();
-    serverUdpSocket->deleteLater();
-
-    emit serverConnectedState();
-
-    qDebug() <<  "Someone just was connected.";
-
-
-
-
-}
 
 
 void network_core::server_stop()
 {
-      socket->deleteLater();
-      server->disconnect();
-   // server->deleteLater();
-      server->close();
-      qDebug() << "on disconnected";
+    socket->deleteLater();
+    server->disconnect();
+    // server->deleteLater();
+    server->close();
+    qDebug() << "on disconnected";
 
 }
 
-
-void network_core::slotReadClient()
-{
-    qDebug() << "Читаем клиента: ";
-    socket = (QTcpSocket*)sender();
-
-
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    QString message = codec->toUnicode(socket->readAll());
-    game_obj->OpponentName = message;
-
-    qDebug() << message;
-
-
-}
 
 
 void network_core::slotListen()
@@ -220,159 +512,6 @@ void network_core::slotListen()
         return;
     }
 }
-
-void network_core::client_readyRead()
-{
-
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    QString message = codec->toUnicode(ClientSocket->readAll());
-
-
-    qDebug() << "message: " + message;
-
-    if(message != "move" && message.length() != 1)
-        game_obj->OpponentName = message;
-    else if(message == "move")
-    {
-        emit yourMove();
-    }else if(message.length() == 1)
-    {
-        CellToChange = message.toInt();
-        qDebug() << message + " - будет изменен.";
-
-
-        switch (CellToChange) {
-        case 0:
-            emit set_0_on_0();
-            break;
-        case 1:
-            emit set_0_on_1();
-            break;
-        case 2:
-            emit set_0_on_2();
-            break;
-        case 3:
-            emit set_0_on_3();
-            break;
-        case 4:
-            emit set_0_on_4();
-            break;
-        case 5:
-            emit set_0_on_5();
-            break;
-        case 6:
-            emit set_0_on_6();
-            break;
-        case 7:
-            emit set_0_on_7();
-            break;
-        case 8:
-            emit set_0_on_8();
-            break;
-
-        default:
-            break;
-        }
-
-        switch (CellToChange) {
-        case 0:
-            emit set_X_on_0();
-            break;
-        case 1:
-            emit set_X_on_1();
-            break;
-        case 2:
-            emit set_X_on_2();
-            break;
-        case 3:
-            emit set_X_on_3();
-            break;
-        case 4:
-            emit set_X_on_4();
-            break;
-        case 5:
-            emit set_X_on_5();
-            break;
-        case 6:
-            emit set_X_on_6();
-            break;
-        case 7:
-            emit set_X_on_7();
-            break;
-        case 8:
-            emit set_X_on_8();
-            break;
-
-        default:
-            break;
-        }
-
-
-    }
-
-
-
-}
-
-void network_core::client_Error(QAbstractSocket::SocketError err)
-{
-    QString strError =
-            "Error: " + (err == QAbstractSocket::HostNotFoundError ?
-                             "The host wasn`t found." :
-                             err == QAbstractSocket::RemoteHostClosedError ?
-                                 "The remoute host is closed." :
-                                 err == QAbstractSocket::ConnectionRefusedError ?
-                                     "The connection was refused." :
-                                     QString(ClientSocket->errorString()));
-    qDebug() << strError;
-}
-
-void network_core::client_Connected()
-{
-    emit clientConnectedState();
-    qDebug() << "client_Connected() slot";
-    isConnected = true;
-    client_sendToServer(game_obj->PlayerName);
-}
-
-bool network_core::client_is_Connected()
-{
-    return isConnected;
-}
-
-
-
-bool network_core::isServerConnect()
-{
-    return isConnectedOnServer;
-}
-
-
-QString network_core::test_showIp()
-{
-    return test_ip;
-}
-
-
-void network_core::client_sendToServer(const QString &msg)
-{
-    ClientSocket->write(msg.toUtf8());
-}
-
-void network_core::sendToClient(QTcpSocket *socket, const QString &str)
-{
-    socket->write(str.toUtf8());
-}
-
-
-
-
-
-
-
-
-
-
 
 
 

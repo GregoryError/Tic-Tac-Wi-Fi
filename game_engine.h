@@ -5,6 +5,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QDebug>
+#include <QSet>
 
 class game_engine : public QObject
 {
@@ -13,9 +14,13 @@ public:
     game_engine(QObject *parent = nullptr);
     QString PlayerName;
     QString OpponentName;
+    int playerType;   // sets who are you, cross or circle
+
 
 
 private:
+    QSet<int> player_0;  // Sets for collecting player answers
+    QSet<int> player_X;
 
 
 
@@ -26,7 +31,7 @@ public slots:
     QString showPlayerName();
     QString showOpponentName();
     void setPlayerName(QString name);
-    void nextMove(int field);
+    void nextMove(const int& player, const int& field);
     int whoIsWin();
     int randomBetween();
 
