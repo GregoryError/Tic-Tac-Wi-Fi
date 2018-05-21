@@ -27,6 +27,11 @@ public:
 
     int CellToChange = 0;
 
+    bool isItServer = false;
+
+    bool amIcross = false;
+
+
 private:
     QTcpServer *server;
     QTcpSocket *socket;
@@ -107,6 +112,8 @@ public slots:
 
 
     void gameInit();
+    void thisMoveMade(int ind);
+    bool isIcross();
 
 
 

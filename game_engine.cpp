@@ -63,31 +63,31 @@ int game_engine::whoIsWin()
     if(player_X.find(0) != player_X.end() &&
             player_X.find(1) != player_X.end() &&
             player_X.find(2) != player_X.end())
-        return 0;
+        return 1;
     if(player_X.find(3) != player_X.end() &&
             player_X.find(4) != player_X.end() &&
             player_X.find(5) != player_X.end())
-        return 0;
+        return 1;
     if(player_X.find(6) != player_X.end() &&
             player_X.find(7) != player_X.end() &&
             player_X.find(8) != player_X.end())
-        return 0;
+        return 1;
     if(player_X.find(0) != player_X.end() &&
             player_X.find(3) != player_X.end() &&
             player_X.find(6) != player_X.end())
-        return 0;
+        return 1;
     if(player_X.find(1) != player_X.end() &&
             player_X.find(4) != player_X.end() &&
             player_X.find(7) != player_X.end())
-        return 0;
+        return 1;
     if(player_X.find(2) != player_X.end() &&
             player_X.find(5) != player_X.end() &&
             player_X.find(8) != player_X.end())
-        return 0;
+        return 1;
     if(player_X.find(6) != player_X.end() &&
             player_X.find(4) != player_X.end() &&
             player_X.find(2) != player_X.end())
-        return 0;
+        return 1;
     if(player_X.find(0) != player_X.end() &&
             player_X.find(4) != player_X.end() &&
             player_X.find(8) != player_X.end())

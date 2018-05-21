@@ -338,6 +338,7 @@ Window {
             onOpponentMove:{
                 console.log("OPPONENT MOVE")
                 
+                statusTxt.y = cells.y - 70
                 statusTxt.text = game_engine.showOpponentName() + " move!";
                 statusTxt.color = "#2ba1f3";
                 statusTxt.visible = true;
@@ -568,7 +569,16 @@ Window {
                         }
                         onClicked: {
                             console.log(index)
-                            network_core.justsendToClient(index);
+
+                            if(network_core.isIcross())
+                                myModel.get(index).backdata = "qrc:/cross.png"
+                            else
+                                myModel.get(index).backdata = "qrc:/circle.png"
+
+                            myModel.get(index).active = false
+
+                            network_core.thisMoveMade(index);
+
                         }
 
                     }
