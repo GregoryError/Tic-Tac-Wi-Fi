@@ -31,14 +31,11 @@ Window {
             startItemDisAppear.running = true
             cells.visible = true
             statusTxt.visible = false
-            
-            secondtimer.running = true
-            
             fillGroundDisAppear.running = true
-            
-            // network_core.gameProcess();
-            
-            firsttimer.running = true;
+
+
+            secondtimer.running = true
+
             
         }
         
@@ -48,32 +45,23 @@ Window {
             startItemDisAppear.running = true
             cells.visible = true
             statusTxt.visible = false
+            fillGroundDisAppear.running = true
             
             secondtimer.running = true
             
-            fillGroundDisAppear.running = true
+
             
             
         }
         
     }
     
-    
-    
-    
-    Timer {
-        id: firsttimer
-        interval: 50;
-        
-        onTriggered:{
-            network_core.gameInit();
-        }
-    }
+
     
     
     Timer {
         id: secondtimer
-        interval: 500;
+        interval: 400;
         
         // running:
         
@@ -243,8 +231,7 @@ Window {
                     
                     network_core.client_Find()
                     
-                    
-                    
+                                        
                 }
                 
             }
@@ -284,8 +271,7 @@ Window {
                     createButtonDis.running = true
                     
                     network_core.slotListen()
-                    
-                    
+                                       
                     bigbusy.running = true
                     
                     // startItemDisAppear.running = true
@@ -594,7 +580,7 @@ Window {
                 running: cells.visible
                 from: 200
                 to: 1
-                duration: 1000
+                duration: 2000
                 easing.type: Easing.OutExpo
                 onStopped: {
                     // some soundeffects

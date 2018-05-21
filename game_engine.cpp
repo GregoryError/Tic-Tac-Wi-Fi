@@ -112,7 +112,8 @@ void game_engine::nextMove(const int& player, const int& field)
         player_X.insert(field);
 
     QString str = QString::number(field);
-    qDebug() << str;
+    qDebug() << "Добавленно в набор для игрока " +
+                QString::number(player) + ": " + str;
 
 
 }
