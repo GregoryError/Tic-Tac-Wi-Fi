@@ -93,6 +93,7 @@ public slots:
     void slotListen();
     void server_stop();
     bool isServerConnect();
+    bool amIServer();
     void justsendToClient(QString str);
 
     void startBroadcasting();
@@ -109,6 +110,7 @@ public slots:
     void client_Error(QAbstractSocket::SocketError);
     void client_sendToServer(const QString &msg);
     bool client_is_Connected();
+    void client_disconnect();
 
 
     void gameInit();

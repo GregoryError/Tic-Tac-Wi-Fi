@@ -231,7 +231,7 @@ Window {
                     
                     network_core.client_Find()
                     
-                                        
+
                 }
                 
             }
@@ -271,7 +271,7 @@ Window {
                     createButtonDis.running = true
                     
                     network_core.slotListen()
-                                       
+
                     bigbusy.running = true
                     
                     // startItemDisAppear.running = true
@@ -320,6 +320,42 @@ Window {
 
         Connections{
             target: network_core
+
+
+
+
+
+
+            onOpponentWin:{
+
+                statusTxt.y = cells.y - 70
+                statusTxt.text = game_engine.showOpponentName() + " win!";
+                statusTxt.color = "#2ba1f3";
+                statusTxt.visible = true;
+                cellsExit.running = true
+
+
+
+            }
+
+            onYouWin:{
+
+                statusTxt.y = cells.y - 70
+                statusTxt.text = " You win!";
+                statusTxt.color = "#2ba1f3";
+                statusTxt.visible = true;
+                cellsExit.running = true
+
+
+            }
+
+
+
+
+
+
+
+
             
             onOpponentMove:{
                 console.log("OPPONENT MOVE")
@@ -586,100 +622,70 @@ Window {
                     // some soundeffects
                 }
             }
+
+
+
+            SequentialAnimation{
+                id: cellsExit
+                running: false
+
+
+                ParallelAnimation{
+
+                    NumberAnimation{
+                        target: cells
+                        properties: "scale"
+                        from: 1
+                        to: 150
+                        duration: 700
+                        easing.type: Easing.InExpo
+
+
+                    }
+                    NumberAnimation{
+                        target: cells
+                        properties: "opacity"
+                        from: 1
+                        to: 0
+                        duration: 1500
+                        easing.type: Easing.InExpo
+
+                    }
+
+                }
+
+                onStopped: {
+                    // Here must be the slot, that reset all of values,
+                    // and begin new game again.
+
+                    // if(!network_core.amIServer())
+                    // {
+                    // network_core.client_disconnect()
+                    // connecttimer.running = true
+                    // }
+
+
+                }
+
+            }
+
+
+
         }
-        
-        
-        
-        
-        
-        //             Grid{
-        //                 id: cells
-        //                 anchors.horizontalCenter: parent.horizontalCenter
-        //                 y: mainfield.height / 2
-        //
-        //                 visible: false
-        //                 enabled: false
-        //                // columns: 3
-        //                // rows: 3
-        //                // spacing: 7
-        //
-        //
-        //                 Repeater{
-        //                     id: rpt
-        //                     model: 9
-        //
-        //                     Button{
-        //                        id: buttons
-        //
-        //                        width: 60
-        //                        height: width
-        //
-        //                        background: Rectangle{
-        //                            id: buttBack
-        //                            anchors.fill: parent
-        //                            radius: 3
-        //                            color: "#2cbaf1"
-        //
-        //                        }
-        //
-        //                        Text{
-        //                            id: buttontxt
-        //                            anchors.centerIn: parent
-        //                            font.family: "Lato Light"
-        //                            font.pointSize: (main.height / 9) / 2 -15
-        //                            color: "white"
-        //                            //text: index
-        //
-        //                        }
-        //                            onClicked: {
-        //
-        //                                  game_engine.nextMove(index);
-        //
-        //                                  buttBack.color = "green"
-        //
-        //                                  buttons.enabled = false
-        //
-        //                                                                   //buttontxt.visible = false
-        //                                //buttons.visible = false
-        //
-        //                            }
-        //
-        //                       }
-        //
-        //                }
-        //
-        //             ScaleAnimator{
-        //                 id: cellAppear
-        //                 target: cells
-        //                 running: cells.visible
-        //                 from: 200
-        //                 to: 1
-        //                 duration: 1000
-        //                 easing.type: Easing.OutExpo
-        //                 onStopped: {
-        //                    // some soundeffects
-        //                 }
-        //             }
-        //
-        //         }
-        
-        
-        //     TextArea{
-        //         id: testZone
-        //         width: Screen.width - 100
-        //         height: 250
-        //
-        //         anchors.horizontalCenter: mainfield.horizontalCenter
-        //         anchors.top: cells.bottom
-        //         font.family: "Sawasdee"
-        //         font.pixelSize: 20
-        //         text: network_core.test_showIp()
-        //
-        //     }
-        //
-        
-        
-        
+
+
+
+        Timer {
+            id: connecttimer
+            interval: 150;
+
+             running: false
+
+            onTriggered:{
+                network_core.client_connect()
+            }
+        }
+
         
         Text {
             id: statusTxt
@@ -763,36 +769,10 @@ Window {
             }
         }
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
     }
-    
-    
-    
-    // Timer {
-    //     id: firsttimer
-    //         interval: 1750;
-    //
-    //         //running:
-    //
-    //         onTriggered:{
-    //             network_core.client_Find()
-    //             bigbusy.running = false
-    //             statusTxt.visible = false
-    //             cells.visible = true
-    //
-    //
-    //         }
-    //     }
-    //
-    
+
+
     BusyIndicator {
         id: bigbusy
         opacity: 0

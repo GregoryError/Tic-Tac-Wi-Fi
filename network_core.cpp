@@ -48,14 +48,14 @@ void network_core::gameInit()
     if(game_obj->playerType == 0)
     {
         amIcross = false;
-        emit opponentMove();
+        if(game_obj->whoIsWin() == 2) emit opponentMove();
         sendToClient(socket, "#youre_X");   // I`am 'zero', you re 'cross'
     }
 
     if(game_obj->playerType == 1)
     {
         amIcross = true;
-        emit yourMove();
+        if(game_obj->whoIsWin() == 2) emit yourMove();
         sendToClient(socket, "#youre_0");   // I`am 'cross', you re 'zero'
     }
 
@@ -69,6 +69,7 @@ void network_core::thisMoveMade(int ind)
 
     if(isItServer)
     {
+        sendToClient(socket, QString::number(ind));
 
         if(game_obj->playerType == 1)
         {
@@ -83,26 +84,42 @@ void network_core::thisMoveMade(int ind)
         if(game_obj->playerType == 0)              // Win-check
         {
             if(game_obj->whoIsWin() == 0)
+            {
+                emit youWin();
+                justsendToClient("#younot#");
                 qDebug() << "You win!";
+            }
             else if(game_obj->whoIsWin() == 1)
+            {
+                emit opponentWin();
+                justsendToClient("#youwin#");
                 qDebug() << "Your opponent win!";
+            }
         }
 
         if(game_obj->playerType == 1)
         {
             if(game_obj->whoIsWin() == 1)
+            {
+                emit youWin();
+                justsendToClient("#younot#");
                 qDebug() << "You win!";
+            }
             else if(game_obj->whoIsWin() == 0)
+            {
+                emit opponentWin();
+                justsendToClient("#youwin#");
                 qDebug() << "Your opponent win!";
+            }
         }
 
 
 
-        sendToClient(socket, QString::number(ind));
+        //if(game_obj->whoIsWin() != 2)// sendToClient(socket, QString::number(ind));
 
     }
     else client_sendToServer(QString::number(ind));
-    emit opponentMove();
+    if(game_obj->whoIsWin() == 2) emit opponentMove();
 }
 
 bool network_core::isIcross()
@@ -281,22 +298,38 @@ void network_core::slotReadClient()
         if(game_obj->playerType == 0)              // Win-check
         {
             if(game_obj->whoIsWin() == 0)
+            {
+                emit youWin();
+                justsendToClient("#younot#");
                 qDebug() << "You win!";
+            }
             else if(game_obj->whoIsWin() == 1)
+            {
+                emit opponentWin();
+                justsendToClient("#youwin#");
                 qDebug() << "Your opponent win!";
+            }
         }
 
         if(game_obj->playerType == 1)
         {
             if(game_obj->whoIsWin() == 1)
+            {
+                emit youWin();
+                justsendToClient("#younot#");
                 qDebug() << "You win!";
+            }
             else if(game_obj->whoIsWin() == 0)
+            {
+                emit opponentWin();
+                justsendToClient("#youwin#");
                 qDebug() << "Your opponent win!";
+            }
         }
 
 
-        if(game_obj->playerType != 1 || game_obj->playerType != 0)
-            emit yourMove();
+        // if(game_obj->playerType != 1 || game_obj->playerType != 0)
+        if(game_obj->whoIsWin() == 2) emit yourMove();
 
 
     }
@@ -314,7 +347,7 @@ void network_core::justsendToClient(QString str)
 void network_core::sendToClient(QTcpSocket *socket, const QString &str)
 {
     socket->write(str.toUtf8());
-    socket->waitForBytesWritten();
+    //socket->waitForBytesWritten();
 
 }
 
@@ -361,6 +394,11 @@ void network_core::server_stop()
 bool network_core::isServerConnect()
 {
     return isConnectedOnServer;
+}
+
+bool network_core::amIServer()
+{
+    return isItServer;
 }
 
 
@@ -419,27 +457,48 @@ void network_core::client_readyRead()
 
     if(message.length() > 1)
     {
+
+
         for(auto &ch:message)
         {
             if(ch == '#') break;
             name += ch;
         }
 
-        game_obj->OpponentName = name;
+        QString restOfMsg;
 
-        qDebug() << "Name from opponent message: " + name;
+        if(name.length() > 1)
+        {
+            game_obj->OpponentName = name;
 
-        QString restOfMsg = message.mid(name.length(), 8);
+            qDebug() << "Name from opponent message: " + name;
 
-        qDebug() << "Server set my type as: " + restOfMsg;
+            restOfMsg = message.mid(name.length(), 8);
+        }else {
+            restOfMsg = message;
+        }
+
+
 
         if(restOfMsg == "#youre_X"){
+            qDebug() << "Server set my type as: " + restOfMsg;
             game_obj->playerType = 1;
-            emit yourMove();
+            amIcross = true;
+            if(game_obj->whoIsWin() == 2) emit yourMove();
         }
         if(restOfMsg == "#youre_0"){
+            qDebug() << "Server set my type as: " + restOfMsg;
             game_obj->playerType = 0;
-            emit opponentMove();
+            amIcross = false;
+            if(game_obj->whoIsWin() == 2) emit opponentMove();
+        }
+        if(restOfMsg == "#youwin#")
+        {
+            emit youWin();
+        }
+        if(restOfMsg == "#younot#")
+        {
+            emit opponentWin();
         }
     }
 
@@ -531,30 +590,33 @@ void network_core::client_readyRead()
         }
 
 
+        /////  Following block of code is under the question...
+        ///
+        /// if(game_obj->playerType == 0)
+        /// {
+        ///
+        ///     if(game_obj->whoIsWin() == 0)
+        ///         qDebug() << "You win!";
+        ///     else if(game_obj->whoIsWin() == 1)
+        ///         qDebug() << "Your opponent win!";
+        /// }
+        ///
+        /// if(game_obj->playerType == 1)
+        /// {
+        ///     if(game_obj->whoIsWin() == 1)
+        ///         qDebug() << "You win!";
+        ///     else if(game_obj->whoIsWin() == 0)
+        ///         qDebug() << "Your opponent win!";
+        /// }
+        ///
+        /// //if(game_obj->playerType != 1 || game_obj->playerType != 0)
 
 
-        if(game_obj->playerType == 0)
-        {
 
-            if(game_obj->whoIsWin() == 0)
-                qDebug() << "You win!";
-            else if(game_obj->whoIsWin() == 1)
-                qDebug() << "Your opponent win!";
-        }
-
-        if(game_obj->playerType == 1)
-        {
-            if(game_obj->whoIsWin() == 1)
-                qDebug() << "You win!";
-            else if(game_obj->whoIsWin() == 0)
-                qDebug() << "Your opponent win!";
-        }
-
-        if(game_obj->playerType != 1 || game_obj->playerType != 0)
-            emit yourMove();
+        if(game_obj->whoIsWin() == 2) emit yourMove();
 
 
-}
+    }
 
 
 
@@ -592,7 +654,10 @@ bool network_core::client_is_Connected()
     return isConnected;
 }
 
-
+void network_core::client_disconnect()
+{
+    ClientSocket->disconnectFromHost();
+}
 
 void network_core::client_Find()
 {
