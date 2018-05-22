@@ -286,7 +286,7 @@ Window {
                     target: createButton
                     running: false
                     from: 1
-                    to: 1000
+                    to: 900
                     duration: 2300
                     easing.type: Easing.OutExpo
                     onStopped: {
@@ -382,14 +382,7 @@ Window {
                 cells.enabled = true
             }
             
-            
-            
-            onChangeCell:{
-                //rpt.itemAt(network_core.changeCellN()).background.color = "red"
-                cells
-            }
-            
-            
+
         }
         
 
@@ -616,7 +609,7 @@ Window {
                 running: cells.visible
                 from: 200
                 to: 1
-                duration: 2000
+                duration: 900
                 easing.type: Easing.OutExpo
                 onStopped: {
                     // some soundeffects
@@ -647,7 +640,7 @@ Window {
                         properties: "opacity"
                         from: 1
                         to: 0
-                        duration: 1500
+                        duration: 800
                         easing.type: Easing.InExpo
 
                     }
