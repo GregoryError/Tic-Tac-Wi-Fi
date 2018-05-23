@@ -104,6 +104,8 @@ int game_engine::randomBetween()
     return qrand() % 2;
 }
 
+
+
 void game_engine::nextMove(const int& player, const int& field)
 {
     if(player == 0)
@@ -117,4 +119,36 @@ void game_engine::nextMove(const int& player, const int& field)
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

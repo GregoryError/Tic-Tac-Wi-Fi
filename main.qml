@@ -658,6 +658,25 @@ Window {
                     // }
 
 
+                    console.log(myModel.rowCount());
+
+
+                    for(var i = 0; i !== myModel.rowCount(); ++i)
+                    {
+                        myModel.get(i).backdata = "null"
+                        myModel.get(i).active = true
+                    }
+
+                    network_core.gameRestart()
+                    cells.visible = true
+                    cells.opacity = 1
+                    cellAppear.running = true
+
+
+
+
+
+
                 }
 
             }
@@ -672,7 +691,7 @@ Window {
             id: connecttimer
             interval: 150;
 
-             running: false
+            running: false
 
             onTriggered:{
                 network_core.client_connect()

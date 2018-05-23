@@ -46,6 +46,8 @@ private:
 
 
 
+
+
 private:      // client
     QTcpSocket *ClientSocket;
     bool isConnected = false;
@@ -116,6 +118,9 @@ public slots:
     void gameInit();
     void thisMoveMade(int ind);
     bool isIcross();
+
+
+    void gameRestart();
 
 
 

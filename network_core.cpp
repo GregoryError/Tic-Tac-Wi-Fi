@@ -31,12 +31,24 @@ network_core::network_core(game_engine *obj, const int &nPort, QObject *parent)
             SLOT(client_Error(QAbstractSocket::SocketError)));
 
 
+
     game_obj = obj;
 
 }
 
 
 // Common functions
+
+
+void network_core::gameRestart()
+{
+    game_obj->player_0.clear();
+    game_obj->player_X.clear();
+
+    gameInit();
+}
+
+
 
 
 void network_core::gameInit()
@@ -341,6 +353,7 @@ void network_core::slotReadClient()
 
 void network_core::justsendToClient(QString str)
 {
+    socket->waitForReadyRead(50);
     sendToClient(socket, str);
 }
 

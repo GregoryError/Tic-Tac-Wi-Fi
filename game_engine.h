@@ -17,10 +17,9 @@ public:
     int playerType;   // sets who are you, cross or circle
 
 
-
-private:
     QSet<int> player_0;  // Sets for collecting player answers
     QSet<int> player_X;
+private:
 
 
 
@@ -34,6 +33,8 @@ public slots:
     void nextMove(const int& player, const int& field);
     int whoIsWin();
     int randomBetween();
+
+
 
 };
 
