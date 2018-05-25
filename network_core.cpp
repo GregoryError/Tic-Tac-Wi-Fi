@@ -99,6 +99,18 @@ void network_core::thisMoveMade(int ind)
             if(game_obj->whoIsWin() == 0)
             {
                 emit youWin();
+
+                QTime time;
+                time.start();
+                for(int i(0); i < 5;)
+                {
+                    if(time.elapsed() > 5){
+                        time.start();
+                        ++i;
+                    }
+                }
+
+
                 justsendToClient("#younot#");
                 qDebug() << "You win!";
             }
@@ -121,6 +133,18 @@ void network_core::thisMoveMade(int ind)
             if(game_obj->whoIsWin() == 1)
             {
                 emit youWin();
+
+                QTime time;
+                time.start();
+                for(int i(0); i < 5;)
+                {
+                    if(time.elapsed() > 5){
+                        time.start();
+                        ++i;
+                    }
+                }
+
+
                 justsendToClient("#younot#");
                 qDebug() << "You win!";
             }
@@ -327,6 +351,18 @@ void network_core::slotReadClient()
             if(game_obj->whoIsWin() == 0)
             {
                 emit youWin();
+
+                QTime time;
+                time.start();
+                for(int i(0); i < 5;)
+                {
+                    if(time.elapsed() > 5){
+                        time.start();
+                        ++i;
+                    }
+                }
+
+
                 justsendToClient("#younot#");
                 qDebug() << "You win!";
             }
@@ -348,6 +384,18 @@ void network_core::slotReadClient()
             if(game_obj->whoIsWin() == 1)
             {
                 emit youWin();
+
+
+                QTime time;
+                time.start();
+                for(int i(0); i < 5;)
+                {
+                    if(time.elapsed() > 5){
+                        time.start();
+                        ++i;
+                    }
+                }
+
                 justsendToClient("#younot#");
                 qDebug() << "You win!";
             }
@@ -379,7 +427,7 @@ void network_core::slotReadClient()
 void network_core::justsendToClient(QString str)
 {
     //socket->waitForBytesWritten();
-    socket->waitForReadyRead(80);
+    //socket->waitForReadyRead(80);
     sendToClient(socket, str);
 }
 
@@ -464,16 +512,6 @@ bool network_core::amIServer()
 
 
 
-
-
-
-
-
-
-
-
-
-
 // Client functions
 
 
@@ -486,8 +524,8 @@ void network_core::client_readyRead()
 {
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    //ClientSocket->waitForReadyRead()
     QString message = codec->toUnicode(ClientSocket->readAll());
-
 
     qDebug() << "Message from server: " + message;
 
@@ -674,7 +712,7 @@ void network_core::client_readyRead()
 void network_core::client_sendToServer(const QString &msg)
 {
     ClientSocket->write(msg.toUtf8());
-    ClientSocket->waitForBytesWritten();
+    // ClientSocket->waitForBytesWritten();
 }
 
 void network_core::client_Error(QAbstractSocket::SocketError err)

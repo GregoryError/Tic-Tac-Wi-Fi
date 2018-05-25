@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QSet>
+#include <QSettings>
 
 #include <QSoundEffect>
 
@@ -22,6 +23,9 @@ public:
     QSet<int> player_0;  // Sets for collecting player answers
     QSet<int> player_X;
 
+
+    QSettings *settings;
+
     QSoundEffect *effect_win, *effect_loose, *effect_tap, *effect_begin;
 
 
@@ -35,6 +39,7 @@ signals:
 public slots:
     QString showPlayerName();
     QString showOpponentName();
+    QString givePlayerName();
     void setPlayerName(QString name);
     void nextMove(const int& player, const int& field);
     int whoIsWin();

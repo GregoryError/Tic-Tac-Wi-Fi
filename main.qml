@@ -167,7 +167,10 @@ Window {
                 anchors.horizontalCenter: startItem.horizontalCenter
                 anchors.top: startItem.top
                 anchors.topMargin: 70
-                
+
+                text: game_engine.givePlayerName();
+
+
                 font.pixelSize: 30
                 font.family: "Lato Light"
                 placeholderText: "Your name"
@@ -250,6 +253,8 @@ Window {
                     text: "Start server";
                 }
                 onClicked: {
+
+                    //console.log(game_engine.givePlayerName());
                     
                     startItem.visible = false
                     
@@ -541,15 +546,15 @@ Window {
             anchors.horizontalCenter: parent.horizontalCenter
             y: mainfield.height / 2
             
-            width: cellWidth * 3 + 3
-            height: cellHeight * 3 + 3
+          //  width: cellWidth * 3 + 3
+          //  height: cellHeight * 3 + 3
 
-         //   cellHeight: Screen.width / 5    // for mobile devices
-         //   cellWidth: Screen.width / 5
+            cellHeight: Screen.width / 5    // for mobile devices
+            cellWidth: Screen.width / 5
 
 
-            cellHeight: Screen.width / 15
-            cellWidth: Screen.width / 15
+         //   cellHeight: Screen.width / 17
+         //   cellWidth: Screen.width / 17
 
 
             model: myModel

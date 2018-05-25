@@ -12,6 +12,10 @@ game_engine::game_engine(QObject *parent) : QObject(parent)
     effect_tap = new QSoundEffect;
     effect_tap->setSource(QUrl::fromLocalFile(":/tap.wav"));
 
+
+    settings = new QSettings("SmartGames", "Tic-Tac-Wi-Fi");
+
+
 }
 
 
@@ -50,7 +54,17 @@ QString game_engine::showOpponentName()
 void game_engine::setPlayerName(QString name)
 {
     PlayerName = name;
+    // setValue(const QString &key, const QVariant &value)
+    settings->setValue("nm", PlayerName);
 }
+
+QString game_engine::givePlayerName()
+{
+    qDebug() << settings->value("nm").toString();
+    return settings->value("nm").toString();
+
+}
+
 
 int game_engine::whoIsWin()
 {
