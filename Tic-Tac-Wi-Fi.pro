@@ -2,6 +2,7 @@ QT += quick
 QT += network
 QT += core gui
 CONFIG += c++11
+QT += multimedia
 
 
 # The following define makes your compiler emit warnings if you use
@@ -39,3 +40,6 @@ HEADERS += \
     network_core.h \
     game_engine.h \
     manager.h
+
+DISTFILES += \
+    tap.wav

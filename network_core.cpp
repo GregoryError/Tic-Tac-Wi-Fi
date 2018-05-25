@@ -44,7 +44,6 @@ void network_core::gameRestart()
 {
     game_obj->player_0.clear();
     game_obj->player_X.clear();
-    //isItServer = false;
 
     gameInit();
 }
@@ -61,14 +60,14 @@ void network_core::gameInit()
     if(game_obj->playerType == 0)
     {
         amIcross = false;
-        if(game_obj->whoIsWin() == 2) emit opponentMove();
+        emit opponentMove();
         sendToClient(socket, "#youre_X");   // I`am 'zero', you re 'cross'
     }
 
     if(game_obj->playerType == 1)
     {
         amIcross = true;
-        if(game_obj->whoIsWin() == 2) emit yourMove();
+        emit yourMove();
         sendToClient(socket, "#youre_0");   // I`am 'cross', you re 'zero'
     }
 
@@ -88,6 +87,7 @@ void network_core::thisMoveMade(int ind)
         {
             game_obj->nextMove(1, ind);
         }
+
         if(game_obj->playerType == 0)
         {
             game_obj->nextMove(0, ind);
@@ -107,6 +107,12 @@ void network_core::thisMoveMade(int ind)
                 emit opponentWin();
                 justsendToClient("#youwin#");
                 qDebug() << "Your opponent win!";
+            }else if(game_obj->whoIsWin() == 3)
+            {
+                emit draw();
+                justsendToClient("#wedraw#");
+                qDebug() << "Draw!";
+
             }
         }
 
@@ -123,17 +129,25 @@ void network_core::thisMoveMade(int ind)
                 emit opponentWin();
                 justsendToClient("#youwin#");
                 qDebug() << "Your opponent win!";
+            }else if(game_obj->whoIsWin() == 3)
+            {
+                emit draw();
+                justsendToClient("#wedraw#");
+                qDebug() << "Draw!";
             }
         }
 
 
 
-        //if(game_obj->whoIsWin() != 2)// sendToClient(socket, QString::number(ind));
+        if(game_obj->whoIsWin() == 2)
+            emit opponentMove();
 
     }
-    else client_sendToServer(QString::number(ind));
-    /* if(game_obj->whoIsWin() == 2) */
-    emit opponentMove();
+    else
+    {
+        client_sendToServer(QString::number(ind));
+        emit opponentMove();
+    }
 }
 
 bool network_core::isIcross()
@@ -321,6 +335,11 @@ void network_core::slotReadClient()
                 emit opponentWin();
                 justsendToClient("#youwin#");
                 qDebug() << "Your opponent win!";
+            }else if(game_obj->whoIsWin() == 3)
+            {
+                emit draw();
+                justsendToClient("#wedraw#");
+                qDebug() << "Draw!";
             }
         }
 
@@ -337,6 +356,11 @@ void network_core::slotReadClient()
                 emit opponentWin();
                 justsendToClient("#youwin#");
                 qDebug() << "Your opponent win!";
+            }else if(game_obj->whoIsWin() == 3)
+            {
+                emit draw();
+                justsendToClient("#wedraw#");
+                qDebug() << "Draw!";
             }
         }
 
@@ -354,15 +378,15 @@ void network_core::slotReadClient()
 
 void network_core::justsendToClient(QString str)
 {
-    socket->waitForBytesWritten();
-    socket->waitForReadyRead(70);
+    //socket->waitForBytesWritten();
+    socket->waitForReadyRead(80);
     sendToClient(socket, str);
 }
 
 void network_core::sendToClient(QTcpSocket *socket, const QString &str)
 {
     socket->write(str.toUtf8());
-    //socket->waitForBytesWritten();
+    socket->waitForBytesWritten();
 
 }
 
@@ -519,6 +543,11 @@ void network_core::client_readyRead()
             qDebug() << "Received status: " + restOfMsg;
             emit opponentWin();
         }
+        if(restOfMsg == "#wedraw#")
+        {
+            emit draw();
+            qDebug() << "Received status: " + restOfMsg;
+        }
     }
 
 
@@ -632,7 +661,7 @@ void network_core::client_readyRead()
 
 
 
-       /* if(game_obj->whoIsWin() == 2) */
+        /* if(game_obj->whoIsWin() == 2) */
         emit yourMove();
 
 

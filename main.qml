@@ -33,9 +33,7 @@ Window {
             statusTxt.visible = false
             fillGroundDisAppear.running = true
 
-
             secondtimer.running = true
-
             
         }
         
@@ -48,15 +46,10 @@ Window {
             fillGroundDisAppear.running = true
             
             secondtimer.running = true
-            
 
-            
-            
         }
         
     }
-    
-
     
     
     Timer {
@@ -321,42 +314,38 @@ Window {
         Connections{
             target: network_core
 
-
-
-
-
-
             onOpponentWin:{
-
+                game_engine.soundLoose();
+                statusTxt.font.pointSize = createButton.width / 9
                 statusTxt.y = cells.y - 70
                 statusTxt.text = game_engine.showOpponentName() + " win!";
                 statusTxt.color = "#2ba1f3";
                 statusTxt.visible = true;
-                cellsExit.running = true
-
+                restartTimer.running = true;
 
 
             }
 
             onYouWin:{
-
+                game_engine.soundWin()
+                statusTxt.font.pointSize = createButton.width / 9
                 statusTxt.y = cells.y - 70
                 statusTxt.text = " You win!";
                 statusTxt.color = "#2ba1f3";
                 statusTxt.visible = true;
-                cellsExit.running = true
+                restartTimer.running = true;
+            }
 
-
+            onDraw:{
+                statusTxt.font.pointSize = createButton.width / 9
+                statusTxt.y = cells.y - 70
+                statusTxt.text = "Dead heat!";
+                statusTxt.color = "#2ba1f3";
+                statusTxt.visible = true;
+                restartTimer.running = true;
             }
 
 
-
-
-
-
-
-
-            
             onOpponentMove:{
                 console.log("OPPONENT MOVE")
                 
@@ -384,6 +373,21 @@ Window {
             
 
         }
+
+
+
+        Timer {
+            id: restartTimer
+            interval: 1750;
+            running: false
+
+            onTriggered:{
+                cellsExit.running = true
+            }
+        }
+
+
+
         
 
         Connections{
@@ -537,18 +541,24 @@ Window {
             anchors.horizontalCenter: parent.horizontalCenter
             y: mainfield.height / 2
             
-            width: 194
-            height: 194
-            
-            cellHeight: 60
-            cellWidth: 60
+            width: cellWidth * 3 + 3
+            height: cellHeight * 3 + 3
+
+         //   cellHeight: Screen.width / 5    // for mobile devices
+         //   cellWidth: Screen.width / 5
+
+
+            cellHeight: Screen.width / 15
+            cellWidth: Screen.width / 15
+
+
             model: myModel
             delegate: Component{
                 id: cellDelegat
                 Item {
                     id: oneCell
-                    width: 60
-                    height: 60
+                    width: cells.cellWidth
+                    height: cells.cellHeight
 
                     Button{
                         id: buttons
@@ -560,7 +570,7 @@ Window {
                             color: mycolor
                             anchors.fill: parent
                             radius: 3
-                            anchors.margins: 3
+                            anchors.margins: 1
                             Image {
                                 id: buttImg
                                 smooth: true
@@ -575,7 +585,7 @@ Window {
                                     duration: 200
                                     // easing.type: "OutBack"
                                     onStopped: {
-                                        ///
+                                        game_engine.soundTap()
                                     }
 
                                 }
@@ -583,6 +593,8 @@ Window {
                             }
                         }
                         onClicked: {
+                            //game_engine.soundTap()
+
                             console.log(index)
 
                             if(network_core.isIcross())
@@ -613,6 +625,7 @@ Window {
                 easing.type: Easing.OutExpo
                 onStopped: {
                     // some soundeffects
+                    game_engine.soundBegin()
                 }
             }
 
@@ -668,7 +681,7 @@ Window {
                     }
 
                     if(network_core.amIServer())
-                    network_core.gameRestart()
+                        network_core.gameRestart()
 
 
                     cells.visible = true
@@ -690,16 +703,16 @@ Window {
 
 
 
-       // Timer {
-       //     id: connecttimer
-       //     interval: 150;
-       //
-       //     running: false
-       //
-       //     onTriggered:{
-       //         network_core.client_connect()
-       //     }
-       // }
+        // Timer {
+        //     id: connecttimer
+        //     interval: 150;
+        //
+        //     running: false
+        //
+        //     onTriggered:{
+        //         network_core.client_connect()
+        //     }
+        // }
 
         
         Text {

@@ -62,6 +62,7 @@ signals:
 
     void opponentWin();
     void youWin();
+    void draw();
 
 
     // gamefield managing:

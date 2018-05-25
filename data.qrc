@@ -2,5 +2,9 @@
     <qresource prefix="/">
         <file>circle.png</file>
         <file>cross.png</file>
+        <file>tap.wav</file>
+        <file>begin.wav</file>
+        <file>loose.wav</file>
+        <file>win.wav</file>
     </qresource>
 </RCC>

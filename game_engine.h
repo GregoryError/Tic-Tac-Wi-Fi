@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QSet>
 
+#include <QSoundEffect>
+
 class game_engine : public QObject
 {
     Q_OBJECT
@@ -19,6 +21,10 @@ public:
 
     QSet<int> player_0;  // Sets for collecting player answers
     QSet<int> player_X;
+
+    QSoundEffect *effect_win, *effect_loose, *effect_tap, *effect_begin;
+
+
 private:
 
 
@@ -33,6 +39,11 @@ public slots:
     void nextMove(const int& player, const int& field);
     int whoIsWin();
     int randomBetween();
+
+    void soundWin();
+    void soundLoose();
+    void soundBegin();
+    void soundTap();
 
 
 
