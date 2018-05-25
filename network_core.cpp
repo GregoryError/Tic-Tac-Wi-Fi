@@ -44,6 +44,7 @@ void network_core::gameRestart()
 {
     game_obj->player_0.clear();
     game_obj->player_X.clear();
+    //isItServer = false;
 
     gameInit();
 }
@@ -131,14 +132,14 @@ void network_core::thisMoveMade(int ind)
 
     }
     else client_sendToServer(QString::number(ind));
-    if(game_obj->whoIsWin() == 2) emit opponentMove();
+    /* if(game_obj->whoIsWin() == 2) */
+    emit opponentMove();
 }
 
 bool network_core::isIcross()
 {
     return amIcross;
 }
-
 
 
 
@@ -353,7 +354,8 @@ void network_core::slotReadClient()
 
 void network_core::justsendToClient(QString str)
 {
-    socket->waitForReadyRead(50);
+    socket->waitForBytesWritten();
+    socket->waitForReadyRead(70);
     sendToClient(socket, str);
 }
 
@@ -497,20 +499,24 @@ void network_core::client_readyRead()
             qDebug() << "Server set my type as: " + restOfMsg;
             game_obj->playerType = 1;
             amIcross = true;
-            if(game_obj->whoIsWin() == 2) emit yourMove();
+            //if(game_obj->whoIsWin() == 2)
+            emit yourMove();
         }
         if(restOfMsg == "#youre_0"){
             qDebug() << "Server set my type as: " + restOfMsg;
             game_obj->playerType = 0;
             amIcross = false;
-            if(game_obj->whoIsWin() == 2) emit opponentMove();
+            //if(game_obj->whoIsWin() == 2)
+            emit opponentMove();
         }
         if(restOfMsg == "#youwin#")
         {
+            qDebug() << "Received status: " + restOfMsg;
             emit youWin();
         }
         if(restOfMsg == "#younot#")
         {
+            qDebug() << "Received status: " + restOfMsg;
             emit opponentWin();
         }
     }
@@ -526,7 +532,7 @@ void network_core::client_readyRead()
 
         if(game_obj->playerType == 1)
         {
-            game_obj->nextMove(0, CellToChange);
+            //game_obj->nextMove(0, CellToChange);
 
             switch (CellToChange) {
             case 0:
@@ -565,7 +571,7 @@ void network_core::client_readyRead()
 
         if(game_obj->playerType == 0)
         {
-            game_obj->nextMove(1, CellToChange);
+            //game_obj->nextMove(1, CellToChange);
             switch (CellToChange) {
             case 0:
                 emit set_X_on_0();
@@ -626,7 +632,8 @@ void network_core::client_readyRead()
 
 
 
-        if(game_obj->whoIsWin() == 2) emit yourMove();
+       /* if(game_obj->whoIsWin() == 2) */
+        emit yourMove();
 
 
     }

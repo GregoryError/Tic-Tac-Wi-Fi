@@ -46,8 +46,6 @@ private:
 
 
 
-
-
 private:      // client
     QTcpSocket *ClientSocket;
     bool isConnected = false;

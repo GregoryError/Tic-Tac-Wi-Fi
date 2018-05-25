@@ -661,13 +661,16 @@ Window {
                     console.log(myModel.rowCount());
 
 
-                    for(var i = 0; i !== myModel.rowCount(); ++i)
+                    for(var i = 0; i !== myModel.count; ++i)
                     {
                         myModel.get(i).backdata = "null"
                         myModel.get(i).active = true
                     }
 
+                    if(network_core.amIServer())
                     network_core.gameRestart()
+
+
                     cells.visible = true
                     cells.opacity = 1
                     cellAppear.running = true
@@ -687,16 +690,16 @@ Window {
 
 
 
-        Timer {
-            id: connecttimer
-            interval: 150;
-
-            running: false
-
-            onTriggered:{
-                network_core.client_connect()
-            }
-        }
+       // Timer {
+       //     id: connecttimer
+       //     interval: 150;
+       //
+       //     running: false
+       //
+       //     onTriggered:{
+       //         network_core.client_connect()
+       //     }
+       // }
 
         
         Text {
