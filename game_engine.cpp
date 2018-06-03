@@ -4,13 +4,13 @@
 game_engine::game_engine(QObject *parent) : QObject(parent)
 {
     effect_win = new QSoundEffect;
-    effect_win->setSource(QUrl::fromLocalFile(":/win.wav"));
+    //effect_win->setSource(QUrl::fromLocalFile(":/win.wav"));
     effect_loose = new QSoundEffect;
-    effect_loose->setSource(QUrl::fromLocalFile(":/loose.wav"));
+    //effect_loose->setSource(QUrl::fromLocalFile(":/loose.wav"));
     effect_begin = new QSoundEffect;
-    effect_begin->setSource(QUrl::fromLocalFile(":/begin.wav"));
+    //effect_begin->setSource(QUrl::fromLocalFile(":/begin.wav"));
     effect_tap = new QSoundEffect;
-    effect_tap->setSource(QUrl::fromLocalFile(":/tap.wav"));
+    //effect_tap->setSource(QUrl::fromLocalFile(":/tap.wav"));
 
 
     settings = new QSettings("SmartGames", "Tic-Tac-Wi-Fi");
@@ -22,21 +22,25 @@ game_engine::game_engine(QObject *parent) : QObject(parent)
 
 void game_engine::soundWin()
 {
+    effect_win->setSource(QUrl::fromLocalFile(":/win.wav"));
     effect_win->play();
 }
 
 void game_engine::soundLoose()
 {
+    effect_loose->setSource(QUrl::fromLocalFile(":/loose.wav"));
     effect_loose->play();
 }
 
 void game_engine::soundBegin()
 {
+    effect_begin->setSource(QUrl::fromLocalFile(":/begin.wav"));
     effect_begin->play();
 }
 
 void game_engine::soundTap()
 {
+    effect_tap->setSource(QUrl::fromLocalFile(":/tap.wav"));
     effect_tap->play();
 }
 

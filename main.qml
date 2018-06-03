@@ -546,15 +546,16 @@ Window {
             anchors.horizontalCenter: parent.horizontalCenter
             y: mainfield.height / 2
             
-          //  width: cellWidth * 3 + 3
-          //  height: cellHeight * 3 + 3
-
-            cellHeight: Screen.width / 5    // for mobile devices
-            cellWidth: Screen.width / 5
+            width: cellWidth * 3 + 3
+            height: cellHeight * 3 + 3
 
 
-         //   cellHeight: Screen.width / 17
-         //   cellWidth: Screen.width / 17
+          //  cellHeight: Screen.width / 5    // for mobile devices
+          //  cellWidth: Screen.width / 5
+
+
+           cellHeight: Screen.width / 17
+           cellWidth: Screen.width / 17
 
 
             model: myModel

@@ -102,7 +102,7 @@ void network_core::thisMoveMade(int ind)
 
                 QTime time;
                 time.start();
-                for(int i(0); i < 5;)
+                for(int i(0); i < 15;)
                 {
                     if(time.elapsed() > 5){
                         time.start();
@@ -136,7 +136,7 @@ void network_core::thisMoveMade(int ind)
 
                 QTime time;
                 time.start();
-                for(int i(0); i < 5;)
+                for(int i(0); i < 15;)
                 {
                     if(time.elapsed() > 5){
                         time.start();
@@ -354,7 +354,7 @@ void network_core::slotReadClient()
 
                 QTime time;
                 time.start();
-                for(int i(0); i < 5;)
+                for(int i(0); i < 15;)
                 {
                     if(time.elapsed() > 5){
                         time.start();
@@ -388,7 +388,7 @@ void network_core::slotReadClient()
 
                 QTime time;
                 time.start();
-                for(int i(0); i < 5;)
+                for(int i(0); i < 15;)
                 {
                     if(time.elapsed() > 5){
                         time.start();
